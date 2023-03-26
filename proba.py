@@ -11,7 +11,7 @@ def izenak_lortu():
 	for section in soup.body('section'):
 		if section['class'][0] == 'letra_bakoitza':
 			for a in section('a'):
-				izenLista.append(a.string)
+				izenLista.append({'izena': a.string, 'url': a['href']})
 	return izenLista
 
 def taldearen_diskoak_lortu(taldeIzena):
