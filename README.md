@@ -1,2 +1,2 @@
 # WikiBadok
-Badok web orrialdetik kantak wikidatara pasatzeko tresna
+Badok web orrialdetik wikidatara kantak pasatzeko tresna
