@@ -23,7 +23,14 @@ def taldearen_biografia_lortu(soup):
 	biografia=''
 	if soup.body.find(attrs={'class', 'taldeintro_more'}).p :
 		biografia = soup.body.find(attrs={'class', 'taldeintro_more'}).p.string
-		return biografia
+	return biografia
+	
+def taldearen_oinarrizko_datuak_lortu(soup):
+	urtea=''
+	herria=''
+	generoak=[]
+	
+	return (urtea, herria, generoak)
 
 
 def taldearen_informazioa_lortu(url, datuak):
@@ -31,7 +38,7 @@ def taldearen_informazioa_lortu(url, datuak):
 	soup =  BeautifulSoup(html, 'html.parser')
 	datuak['diskak']=taldearen_diskoak_lortu(soup)
 	datuak['biografia']=taldearen_biografia_lortu(soup)
-	
+	datuak['urtea'], datuak['herria'], datuak['generoak']= taldearen_oinarrizko_datuak_lortu(soup)
 	return datuak
 
 def datuak_lortu():
@@ -40,4 +47,3 @@ def datuak_lortu():
 	for i in range(10):
 		datuak[i] =taldearen_informazioa_lortu(datuak[i]['url'].replace(' ','%20'), datuak[i])
 	return datuak
-        
