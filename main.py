@@ -1,5 +1,4 @@
-import proba
+import funtzioak
 
 #print(proba.izenak_lortu())
-print(proba.datuak_lortu())
-
+print(funtzioak.datuak_lortu())
