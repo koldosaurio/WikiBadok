@@ -14,8 +14,7 @@ def izenak_lortu():
 				izenLista.append({'izena': a.string, 'url': a['href']})
 	return izenLista
 
-def taldearen_diskoak_lortu(taldeIzena):
-	url = "https://www.badok.eus/euskal-musika/"+taldeIzena
+def taldearen_diskoak_lortu(url):
 	html = urlopen(url).read().decode("utf-8")
 	soup =  BeautifulSoup(html, 'html.parser')
 	diskak = []
