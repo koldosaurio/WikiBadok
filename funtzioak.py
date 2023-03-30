@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import aldagaiGlobalak as ag
 
 
 def izenak_lortu():
@@ -14,9 +15,12 @@ def izenak_lortu():
 
 def taldearen_diskoak_lortu(soup):
 	diskak = []
-	for div in soup.body.find(id='diskografia').find_all(attrs={'class': 'row'}):
-		if 'konpartitu' not in div.attrs['class']:
-			diskak.append(div.find_all(attrs={'class':'col-md-4'})[1].a.string)
+	for div in soup.body.find(id='diskografia').find_all(attrs={'class': 'tit'}):
+		diska={}
+		etiketa= div.a
+		diska['izena'] =etiketa.string
+		diska['url'] = etiketa['href']
+		diskak.append(diska)
 	return diskak
 
 def taldearen_biografia_lortu(soup):
@@ -44,6 +48,6 @@ def taldearen_informazioa_lortu(url, datuak):
 def datuak_lortu():
 	datuak=izenak_lortu()
 	#hemen erabakitzen da zenbat elementu hartu behar dituen ta zeintzuk
-	for i in range(50):
+	for i in range(ag.ZENBAT_IZEN):
 		datuak[i] =taldearen_informazioa_lortu(datuak[i]['url'].replace(' ','%20'), datuak[i])
 	return datuak
