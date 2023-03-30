@@ -17,5 +17,4 @@ KODEAK={
 'sorrera data':'P571'
 }
 
-PROBA_ALDAGAIA='Lorea guapisima'
 
