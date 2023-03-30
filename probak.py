@@ -8,7 +8,10 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import funtzioak
 
-url = "https://www.badok.eus/euskal-musika/basaki"
+url = "https://www.badok.eus/euskal-musika/a-maiah/lokarriak"
 html = urlopen(url).read().decode("utf-8")
 soup =  BeautifulSoup(html, 'html.parser')
-print(funtzioak.taldearen_informazioa_lortu(url, {}))
+#print(funtzioak.taldearen_informazioa_lortu(url, {}))
+
+for div in soup.body.find_all(attrs={'class': 'abesti_lista_abesti'}):
+	print(div.contents[0])
