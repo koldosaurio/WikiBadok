@@ -44,6 +44,6 @@ def taldearen_informazioa_lortu(url, datuak):
 def datuak_lortu():
 	datuak=izenak_lortu()
 	#hemen erabakitzen da zenbat elementu hartu behar dituen ta zeintzuk
-	for i in range(10):
+	for i in range(50):
 		datuak[i] =taldearen_informazioa_lortu(datuak[i]['url'].replace(' ','%20'), datuak[i])
 	return datuak
