@@ -26,6 +26,7 @@ def diskaren_datuak_lortu(soup):
 	control=False
 	for item in soup.body.find(attrs={'class': 'taldea_diska'})('p'):
 		informazioa=item.string
+		print(str(item) + '\n\n\n')
 		if control:
 			generoa=informazioa
 			control=False
