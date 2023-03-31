@@ -5,7 +5,7 @@ Created on Thu Mar 30 16:37:53 2023
 @author: Koldo
 """
 ZENBAT_IZEN=10
-
+IZEN_FILTROA=['Mugan']
 
 KODEAK={
 'honako hau da':'P31',
@@ -16,5 +16,6 @@ KODEAK={
 'gizaki':'Q5',
 'sorrera data':'P571'
 }
+
 
 
