@@ -13,5 +13,3 @@ html = urlopen(url).read().decode("utf-8")
 soup =  BeautifulSoup(html, 'html.parser')
 #print(funtzioak.taldearen_informazioa_lortu(url, {}))
 
-for div in soup.body.find_all(attrs={'class': 'abesti_lista_abesti'}):
-	print(div.contents[0])

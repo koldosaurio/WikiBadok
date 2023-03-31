@@ -4,7 +4,7 @@ Created on Thu Mar 30 16:37:53 2023
 
 @author: Koldo
 """
-ZENBAT_IZEN=50
+ZENBAT_IZEN=10
 
 
 KODEAK={
@@ -17,5 +17,4 @@ KODEAK={
 'sorrera data':'P571'
 }
 
-PROBA_ALDAGAIA='Lorea guapisima'
 
