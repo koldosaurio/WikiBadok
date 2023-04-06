@@ -58,11 +58,25 @@ def taldearen_biografia_lortu(soup):
 		biografia = soup.body.find(attrs={'class', 'taldeintro_more'}).p.string
 	return biografia
 	
-#TODO
 def taldearen_oinarrizko_datuak_lortu(soup):
 	urtea=''
 	herria=''
 	generoak=[]
+	for i in soup.body.find(attrs={'class': 'perfila'}).ul('li'):
+		edukiak=i.contents
+		print(edukiak)
+		try:
+			if '-' not in edukiak[0]:
+				int(edukiak[0])
+				urtea=edukiak[0]
+			else:
+				int(edukiak[0].split('-')[0])
+				urtea=edukiak[0]
+		except:
+			if '<strong>Herria:</strong>' in edukiak[0]:
+				herria=edukiak[1]
+			else:
+				generoak=edukiak[1].split(' ')
 	
 	return (urtea, herria, generoak)
 

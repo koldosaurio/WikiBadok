@@ -10,8 +10,8 @@ import funtzioak
 import csv
 import aldagaiGlobalak as ag
 
-url = "https://www.badok.eus/euskal-musika/a-tuti-plain/a-tuti-plain"
+url = "https://www.badok.eus/euskal-musika/madarikatuak"
 html = urlopen(url).read().decode("utf-8")
 soup =  BeautifulSoup(html, 'html.parser')
 #print(funtzioak.taldearen_informazioa_lortu(url, {}))
-funtzioak.diskaren_datuak_lortu(soup)
+print(funtzioak.taldearen_oinarrizko_datuak_lortu(soup))
