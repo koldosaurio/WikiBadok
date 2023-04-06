@@ -20,13 +20,13 @@ def kantak_lortu(soup):
 	return (kantak, len(kantak)==1)
 
 #TODO
-# control aldagaiaren erabilera kendu
+# control aldagaiaren erabilera kendu eta funtzioa ondo jarri
 def diskaren_datuak_lortu(soup):
 	generoa=''
 	control=False
 	for item in soup.body.find(attrs={'class': 'taldea_diska'})('p'):
 		informazioa=item.string
-		print(str(item) + '\n\n\n')
+		#print(str(item) + '\n\n\n')
 		if control:
 			generoa=informazioa
 			control=False
@@ -47,7 +47,7 @@ def taldearen_diskoak_lortu(soup):
 		diska={}
 		etiketa= div.a
 		diska['izena'] =etiketa.string
-		diska['url'] = etiketa['href']
+		diska['url'] = etiketa['href'].replace(' ', '%20')
 		diskaren_informazioa_lortu(diska['url'], diska)
 		diskak.append(diska)
 	return diskak
@@ -78,7 +78,10 @@ def datuak_lortu():
 	datuak=izenak_lortu()
 	#hemen erabakitzen da zenbat elementu hartu behar dituen ta zeintzuk
 	for i in range(len(datuak)):
-		#TODO hau hemendik kendu, filtro bat da izen bat topatzeko
-		if datuak[i]['izena'] in ag.IZEN_FILTROA:
+		#TODO filtro bat da izen bat topatzeko
+		#if datuak[i]['izena'] in ag.IZEN_FILTROA:
+		try:
 			datuak[i] =taldearen_informazioa_lortu(datuak[i]['url'], datuak[i])
+		except:
+			print('talde arazoa: '+datuak[i]['izena'])
 	return datuak
