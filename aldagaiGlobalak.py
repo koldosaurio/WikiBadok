@@ -5,7 +5,7 @@ Created on Thu Mar 30 16:37:53 2023
 @author: Koldo
 """
 ZENBAT_IZEN=10
-IZEN_FILTROA=['Mugan']
+IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
 
 KODEAK={
 'honako hau da':'P31',

@@ -93,9 +93,9 @@ def datuak_lortu():
 	#hemen erabakitzen da zenbat elementu hartu behar dituen ta zeintzuk
 	for i in range(len(datuak)):
 		#TODO filtro bat da izen bat topatzeko
-		#if datuak[i]['izena'] in ag.IZEN_FILTROA:
-		try:
-			datuak[i] =taldearen_informazioa_lortu(datuak[i]['url'], datuak[i])
-		except:
-			print('talde arazoa: '+datuak[i]['izena'])
+		if datuak[i]['izena'].lower() in ag.IZEN_FILTROA:
+			try:
+				datuak[i] =taldearen_informazioa_lortu(datuak[i]['url'], datuak[i])
+			except:
+				print('talde arazoa: '+datuak[i]['izena'])
 	return datuak
