@@ -14,4 +14,3 @@ url = "https://www.badok.eus/euskal-musika/madarikatuak"
 html = urlopen(url).read().decode("utf-8")
 soup =  BeautifulSoup(html, 'html.parser')
 #print(funtzioak.taldearen_informazioa_lortu(url, {}))
-funtzioak.datuak_lortu()
