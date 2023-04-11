@@ -4,6 +4,8 @@ Created on Thu Mar 30 16:37:53 2023
 
 @author: Koldo
 """
+
+hasiera_url="https://www.badok.eus/euskal-musikak/"
 ZENBAT_IZEN=10
 IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
 
