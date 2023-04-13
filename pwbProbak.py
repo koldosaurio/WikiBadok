@@ -15,8 +15,8 @@ targetCode='Q1785'
 
 itemCode ='Q229997'
 
-#funtzioak.add_statement(site, itemCode, statementCode, targetCode)
+funtzioak.add_statement(site, itemCode, statementCode, targetCode)
 
-funtzioak.add_dateStatement(site, itemCode, 'P94385', 2023)
+#funtzioak.add_dateStatement(site, itemCode, 'P94385', 2023)
 
 #funtzioak.add_reference(site, itemCode, statementCode, targetCode, 'https://es.wikipedia.org/wiki/Harry_Styles')
