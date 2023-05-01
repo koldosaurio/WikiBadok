@@ -8,6 +8,9 @@ Created on Thu Mar 30 16:37:53 2023
 hasiera_url="https://www.badok.eus/euskal-musikak/"
 ZENBAT_IZEN=10
 IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
+TALDE_ID=1
+DISKA_ID=1
+ERRORE_FITX=open('erroreak.log', 'a')
 
 KODEAK={
 'honako hau da':'P31',
