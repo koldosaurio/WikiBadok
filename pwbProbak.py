@@ -7,16 +7,24 @@ Created on Tue Apr 11 19:19:00 2023
 
 import pwbFuntzioak as funtzioak
 import pywikibot
+import funtzioak as f
 
-site = pywikibot.Site("test", "wikidata")
+site = pywikibot.Site("wikidata", "wikidata")
 izena='Badok Proba 2'
 statementCode='P94318'
 targetCode='Q1785'
 
 itemCode ='Q229997'
 
-funtzioak.add_statement(site, itemCode, statementCode, targetCode)
+#funtzioak.add_statement(site, itemCode, statementCode, targetCode)
 
 #funtzioak.add_dateStatement(site, itemCode, 'P94385', 2023)
 
-#funtzioak.add_reference(site, itemCode, statementCode, targetCode, 'https://es.wikipedia.org/wiki/Harry_Styles')
+#funtzioak.add_reference(site, itemCode, 'P93', 'https://es.wikipedia.org/wiki/Harry_Styles')
+
+
+datuak =f.__izenak_lortu()
+for i in range(len(datuak)):
+	if datuak[i]['izena'].lower()=='nafarroa 1512':
+		datuak[i] =f.__taldearen_informazioa_lortu(datuak[i]['url'], datuak[i])
+		funtzioak.taldeBerriaSortu(datuak[i])
