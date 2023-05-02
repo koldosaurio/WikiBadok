@@ -184,6 +184,7 @@ def __taldearen_oinarrizko_datuak_lortu(soup):
 				try: 
 					generoak=edukiak[1].split(' ')
 				except:
+					print(edukiak)
 					ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + ' --> Generoarekin zerbait gertatu da\n')
 	
 	return (urtea, herria, generoak)

@@ -6,21 +6,28 @@ from datetime import datetime as dt
 
 datuak=funtzioak.datuak_lortu()
 print('\nDatuak lortuta\n')
-with open('taldeak.csv', 'w', newline='') as file:
-	writer = csv.writer(file)
-	for taldea in datuak:
-		writer.writerow([taldea['id'], taldea['izena'], taldea['url']])
-		try:
-			for diska in taldea['diskak']:
-				with open('diskak.csv', 'w', newline='') as filedisk:
-					writerdisk = csv.writer(filedisk)
-					writerdisk.writerow(diska['id'], diska['izena'], diska['url'],diska['generoa'], diska['single'], taldea['id'])
-					for kanta in diska['kantak']:
-						with open('kantak.csv', 'w', newline='') as filesong:
-							writersong = csv.writer(filesong)
-							writersong.writerow(kanta, diska['id'])
-						filesong.close()
-				filedisk.close()
-		except:
-			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + taldea['izena'] + ' taldearen diskak gehitzerakoan arazoak \n')
+
+file=open('taldeak.csv', 'w', newline='')
+filedisk= open('diskak.csv', 'w', newline='')
+filesong = open('kantak.csv', 'w', newline='')
+
+writer = csv.writer(file)
+writerdisk = csv.writer(filedisk)
+writersong = csv.writer(filesong)
+
+for taldea in datuak:
+	writer.writerow([taldea['id'], taldea['izena'], taldea['url']])
+	try:
+		for diska in taldea['diskak']:
+			writerdisk.writerow([diska['id'], diska['izena'], diska['url'],diska['generoa'], diska['single'], taldea['id']])
+			try:
+				for kanta in diska['kantak']:
+					writersong.writerow([kanta, diska['id']])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + diska['izena'] + ' taldearen kantak gehitzerakoan arazoak \n')
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + taldea['izena'] + ' taldearen diskak gehitzerakoan arazoak \n')
+
+filedisk.close()
+filesong.close()
 file.close()

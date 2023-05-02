@@ -14,7 +14,15 @@ url = "https://www.badok.eus/euskal-musika/madarikatuak"
 html = urlopen(url).read().decode("utf-8")
 soup =  BeautifulSoup(html, 'html.parser')
 datuak = funtzioak.__izenak_lortu()
-datuak[0] =funtzioak.__taldearen_informazioa_lortu(datuak[0]['url'], datuak[0])
+
+filedisk= open('diskak.csv', 'w', newline='')
+writerdisk = csv.writer(filedisk)
+
+
+datuak[0] = funtzioak.__taldearen_informazioa_lortu(datuak[0]['url'], datuak[0])
 for diska in datuak[0]['diskak']:
-	print(diska)
+	writerdisk.writerow([diska['id'], diska['izena'], diska['url'],diska['generoa'], diska['single'], datuak[0]['id']])
+	
+
+
 #print(funtzioak.taldearen_informazioa_lortu(url, {}))
