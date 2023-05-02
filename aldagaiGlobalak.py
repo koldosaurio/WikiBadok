@@ -18,7 +18,6 @@ KODEAK={
 'musika talde':'Q215380',
 'gizaki':'Q5',
 'sorrera data':'P571',
-'diskografia':'P358',
 'genero artistikoa':'P136',
 'osatuta':'P527',   #taldeetako kideak zeintzuk diren esateko
 'url erreferentzia':'P854',

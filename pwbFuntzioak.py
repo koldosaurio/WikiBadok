@@ -7,7 +7,7 @@ Created on Tue Apr 11 16:44:58 2023
 
 import pywikibot
 import aldagaiGlobalak as ag
-site = pywikibot.Site('wikidata:wikidata')
+import csv
 
 
 def create_item(site,izena, mota,taldeIzena):
@@ -68,7 +68,7 @@ def add_statement(site, itemCode, statementCode,targetCode):
 			if targetId.__eq__(targetCode):
 				pywikibot.output(u'Error:Target already exist')
 				found=True
-			break
+				break
 	if(not found):
 		claim.setTarget(target) #Set the target value in the local object.
 		item.addClaim(claim, summary=u'Statement added')
@@ -80,7 +80,7 @@ def add_dateStatement(site, itemCode, statementCode,year): #sorrera edo jaiotze 
 	item = pywikibot.ItemPage(repo, itemCode)
 	
 	item.get()  # you need to call it to access any data.
-	if statementCode in item.claims: # instance of
+	if statementCode in item.claims: #sorrera data dagoeneko baldin badago ez dugu aldatuko
 		pywikibot.output(u'Error:Target already exist')
 	else:
 		dateclaim = pywikibot.Claim(repo,statementCode)
@@ -103,7 +103,11 @@ def add_reference(site, itemCode, statementCode, url):
 		item.addClaim(urlclaim, summary=u'Adding URL reference')
 
 
-
+def get_statement_codes(site, itemCode):
+	repo = site.data_repository()
+	item = pywikibot.ItemPage(repo, itemCode)
+	item.get()  # you need to call it to access any data.
+	return item.claims
 
 
 
@@ -114,15 +118,15 @@ def add_reference(site, itemCode, statementCode, url):
 	
 	GENEROEKIN ARAZOA: LEHENIK ETA BEHIN GENERO HORIEN KODEA ESKURATU BEHAR DUGU WIKIDATATIK
 	"""
-def taldeBerriaSortu(datuak):
+def taldeBerriaSortu(site, datuak):
 	itemKodea = create_item(site,datuak['izena'],1,'')
 	add_statement(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
 	if(datuak['urtea']!=''):
 		add_dateStatement(site, itemKodea, ag.KODEAK['sorrera data'],int(datuak['urtea']))
-	diskografiaKodea=taldeBatenDiskografiaSortu(datuak['izena'], datuak['diskak'], itemKodea)
+	diskografiaKodea=taldeBatenDiskografiaSortu(site,datuak['izena'], datuak['diskak'], itemKodea)
 	add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
-	for i in len(datuak['generoak']):
-		add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK(datuak[i]['generoak']))
+	#for i in len(datuak['generoak']):
+	#	add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK(datuak[i]['generoak']))
 	add_reference(site, itemKodea, ag.KODEAK['url erreferentzia'], datuak['url'])
 
 
@@ -130,25 +134,25 @@ def taldeBerriaSortu(datuak):
 
 
 
-def taldeBatenDiskografiaSortu(izena,diskoak, taldeKodea):
+def taldeBatenDiskografiaSortu(site, izena,diskoak, taldeKodea):
 	itemKodea=create_item(site, izena,2,'')
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia artist discography'])
-	albumakOrdenKronoKode = taldeBatenAlbumakOrdenKronologikoan(izena, itemKodea, diskoak, taldeKodea)
+	albumakOrdenKronoKode = taldeBatenAlbumakOrdenKronologikoan(site,izena, itemKodea, diskoak, taldeKodea)
 	add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],albumakOrdenKronoKode)
-	singleDiskografiaKode= taldeBatenSingleDiskografia(izena, itemKodea, diskoak, taldeKodea)
+	singleDiskografiaKode= taldeBatenSingleDiskografia(site,izena, itemKodea, diskoak, taldeKodea)
 	add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],singleDiskografiaKode)
 	return itemKodea
 
 
 
 
-def taldeBatenAlbumakOrdenKronologikoan(izena,diskografiaKodea, diskak, taldeKodea):
+def taldeBatenAlbumakOrdenKronologikoan(site,izena,diskografiaKodea, diskak, taldeKodea):
 	itemKodea=create_item(site,izena,3,'')
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia albums discography'])
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
 	for i in range(len(diskak)):
 		if(diskak[i]['single'] is False):
-			kodeLag=taldeBatenAlbumakSortu(diskak[i]['izena'], taldeKodea, itemKodea, diskak)
+			kodeLag=taldeBatenAlbumakSortu(site,diskak[i]['izena'], taldeKodea, itemKodea, diskak)
 			add_statement(site, itemKodea, ag.KODEAK['osatuta'],kodeLag)
 	add_statement(site, itemKodea, ag.KODEAK['honen zerrenda'], ag.KODEAK['album'])
 	return itemKodea
@@ -162,7 +166,7 @@ def taldeBatenAlbumakOrdenKronologikoan(izena,diskografiaKodea, diskak, taldeKod
 """
 	ALBUMAREN GENERO ARTISTIKOA LORTZEA FALTA DA
 """
-def taldeBatenAlbumakSortu(izena,taldeKodea,albumakOrdenKronoKode, diskak):
+def taldeBatenAlbumakSortu(site,izena,taldeKodea,albumakOrdenKronoKode, diskak):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, taldeKodea)
 	item_dict=item.get()
@@ -184,19 +188,19 @@ def taldeBatenAlbumakSortu(izena,taldeKodea,albumakOrdenKronoKode, diskak):
 
 
 
-def taldeBatenSingleDiskografia(izena,diskografiaKodea, diskak, taldeKodea):
+def taldeBatenSingleDiskografia(site,izena,diskografiaKodea, diskak, taldeKodea):
 	itemKodea=create_item(site,izena,5,'')
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['singles discography'])
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
 	for i in range(len(diskak)):
 		if(diskak[i]['single'] is True):
-			kodeLag= taldeBatenSingleakSortu(diskak[i]['izena'], itemKodea, taldeKodea, int(diskak[i]['urtea']))
+			kodeLag= taldeBatenSingleakSortu(site,diskak[i]['izena'], itemKodea, taldeKodea, int(diskak[i]['urtea']))
 			add_statement(site, itemKodea, ag.KODEAK['osatuta'],kodeLag)
 	return itemKodea
 
 
 
-def taldeBatenSingleakSortu(izena, singleDiskografiaKodea, taldeKodea, data):
+def taldeBatenSingleakSortu(site,izena, singleDiskografiaKodea, taldeKodea, data):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, taldeKodea)
 	item_dict=item.get()
@@ -212,16 +216,37 @@ def taldeBatenSingleakSortu(izena, singleDiskografiaKodea, taldeKodea, data):
 
 
 
-def taldeaSortuKodearekin(itemKodea, datuak):
+def taldeaOsatuKodearekin(site,itemKodea, datuak):
 	add_statement(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
 	if(datuak['urtea']!=''):
 		add_dateStatement(site, itemKodea, ag.KODEAK['sorrera data'],int(datuak['urtea']))
 	
-	diskografiaKodea=taldeBatenDiskografiaSortu(datuak['izena'], datuak['diskak'], itemKodea)
+	diskografiaKodea=taldeBatenDiskografiaSortu(site,datuak['izena'], datuak['diskak'], itemKodea)
 	add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
 	for i in len(datuak['generoak']):
 		add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK(datuak[i]['generoak']))
 	add_reference(site, itemKodea, ag.KODEAK['url erreferentzia'], datuak['url'])
+
+
+
+
+def csv_to_dict(taldeak, diskak):
+	with open(taldeak, mode='r') as taldeak_csv:
+		taldeakCsv_reader = csv.DictReader(taldeak_csv)
+		datuak = {}
+		for row in taldeakCsv_reader:
+			datuak['id'] = row[0]
+			datuak['izena']=row[1]
+			datuak['url']=row[2]
+	with open(diskak, mode='r') as diskak_csv:
+		diskakCsv_reader = csv.DictReader(diskak_csv)
+		for row in diskakCsv_reader:
+			if(row[4]==datuak['id']):
+				datuak['diska']['izena']=row[1]
+				datuak['diska']['url']=row[2]
+				datuak['diska']['generoa']=row[3]
+	return datuak
+
 
 
 
