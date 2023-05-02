@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import aldagaiGlobalak as ag
+from datetime import datetime as dt
 
 
 def __izenak_lortu():
@@ -22,7 +23,8 @@ def __izenak_lortu():
 	izenLista=[]
 	for section in soup.body(attrs={'class', 'letra_bakoitza'}):
 		for a in section('a'):
-			izenLista.append({'izena': a.string, 'url': a['href'].replace(' ','%20')})
+			izenLista.append({'id': ag.TALDE_ID,'izena': a.string, 'url': a['href'].replace(' ','%20')})
+			ag.TALDE_ID+=1
 	return izenLista
 
 def __kantak_lortu(soup):
@@ -68,7 +70,6 @@ def __diskaren_datuak_lortu(soup):
 	control=False
 	for item in soup.body.find(attrs={'class': 'taldea_diska'})('p'):
 		informazioa=item.string
-		#print(str(item) + '\n\n\n')
 		if control:
 			generoa=informazioa
 			control=False
@@ -118,6 +119,8 @@ def __taldearen_diskoak_lortu(soup):
 	for div in soup.body.find(id='diskografia').find_all(attrs={'class': 'tit'}):
 		diska={}
 		etiketa= div.a
+		diska['id']=ag.DISKA_ID
+		ag.DISKA_ID+=1
 		diska['izena'] =etiketa.string
 		diska['url'] = etiketa['href'].replace(' ', '%20')
 		__diskaren_informazioa_lortu(diska['url'], diska)
@@ -167,7 +170,6 @@ def __taldearen_oinarrizko_datuak_lortu(soup):
 	generoak=[]
 	for i in soup.body.find(attrs={'class': 'perfila'}).ul('li'):
 		edukiak=i.contents
-		print(edukiak)
 		try:
 			if '-' not in edukiak[0]:
 				int(edukiak[0])
@@ -179,7 +181,11 @@ def __taldearen_oinarrizko_datuak_lortu(soup):
 			if '<strong>Herria:</strong>' in edukiak[0]:
 				herria=edukiak[1]
 			else:
-				generoak=edukiak[1].split(' ')
+				try: 
+					generoak=edukiak[1].split(' ')
+				except:
+					print(edukiak)
+					ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + ' --> Generoarekin zerbait gertatu da\n')
 	
 	return (urtea, herria, generoak)
 
@@ -218,13 +224,14 @@ def datuak_lortu():
 		Listako posizio bakoitzak talde baten datuak dituen dictionary bati dagokio
 
 	"""
-	datuak=__izenak_lortu()
+	datuak = __izenak_lortu()
+	
 	#hemen erabakitzen da zenbat elementu hartu behar dituen ta zeintzuk
 	for i in range(len(datuak)):
 		#TODO filtro bat da izen bat topatzeko
-		if datuak[i]['izena'].lower() in ag.IZEN_FILTROA:
+		# if datuak[i]['izena'].lower() in ag.IZEN_FILTROA:
 			try:
 				datuak[i] =__taldearen_informazioa_lortu(datuak[i]['url'], datuak[i])
 			except:
-				print('talde arazoa: '+datuak[i]['izena'])
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + ' --> Arazoak ondoko taldearen informazioa lortzerakoan: ' + datuak[i]['izena'] + '\n')
 	return datuak
