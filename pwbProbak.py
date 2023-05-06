@@ -22,10 +22,10 @@ izena='Badok Proba 2'
 statementCode='P94318'
 targetCode='Q1785'
 
-itemCode ='Q229997'
+itemCode ='Q229612'
 
-funtzioak.add_statement(site, itemCode, statementCode, targetCode)
-
+funtzioak.add_statement(site, itemCode, statementCode, targetCode, 'https://example.com/')
+#print(funtzioak.get_statement_codes(site, itemCode))
 #funtzioak.add_dateStatement(site, itemCode, 'P94385', 2023)
 
 #funtzioak.add_reference(site, itemCode, 'P93', 'https://es.wikipedia.org/wiki/Harry_Styles')

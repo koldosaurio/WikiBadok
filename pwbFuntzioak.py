@@ -52,7 +52,7 @@ def create_item(site,izena, mota,taldeIzena):
 	return new_item.getID()
 
 
-def add_statement(site, itemCode, statementCode,targetCode):
+def add_statement(site, itemCode, statementCode,targetCode, reference = None):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo,itemCode)
 	claim = pywikibot.Claim(repo,statementCode) #honako hau da
@@ -71,7 +71,12 @@ def add_statement(site, itemCode, statementCode,targetCode):
 				break
 	if(not found):
 		claim.setTarget(target) #Set the target value in the local object.
+		if reference is not None:
+			ref_url = pywikibot.Claim(repo, 'P94578')
+			ref_url.setTarget(reference)
+			claim.addSources([ref_url])
 		item.addClaim(claim, summary=u'Statement added')
+
 
 
 
@@ -106,8 +111,9 @@ def add_reference(site, itemCode, statementCode, url):
 def get_statement_codes(site, itemCode):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, itemCode)
-	item.get()  # you need to call it to access any data.
-	return item.claims
+	item_dict = item.get()
+	clm_dict = item_dict["claims"]
+	return clm_dict
 
 
 
@@ -214,7 +220,7 @@ def taldeBatenSingleakSortu(site,izena, singleDiskografiaKodea, taldeKodea, data
 	return itemKodea
 
 
-
+#BERDINA BAINA KODEETATIK ABIATUZ
 
 def taldeaOsatuKodearekin(site,itemKodea, datuak):
 	add_statement(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
