@@ -20,7 +20,6 @@ KODEAK={
 'sorrera data':'P571',
 'genero artistikoa':'P136',
 'osatuta':'P527',   #taldeetako kideak zeintzuk diren esateko
-'url erreferentzia':'P854',
 
 'wikimedia artist discography':'Q104635718',
 'elementuaren zerrenda':'P2354',
@@ -42,6 +41,8 @@ KODEAK={
 'single':'Q134556',
 
 'singles discography':'Q59248059',
+
+'url':'P854'
 }
 
 GENEROAK={

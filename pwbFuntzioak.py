@@ -26,7 +26,7 @@ def create_item(site,izena, mota,taldeIzena):
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==3:#taldearen album diskografia sortu
-		label= {"eu": izena+'(r)en albumak orden kronologikoan', "es":"Álbumes de "+ izena + " en orden cronológico", "en": izena + "'s albums in chronological order"}
+		label= {"eu": izena+'(r)en albumak', "es":"Álbumes de "+ izena, "en": izena + "'s albums"}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
 		description={"en":"Wikimedia albums discography", "es":"Discografía de álbumes de Wikimedia", "eu": "Wikimediako albumen diskografia"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
@@ -52,11 +52,11 @@ def create_item(site,izena, mota,taldeIzena):
 	return new_item.getID()
 
 
-def add_statement(site, itemCode, statementCode,targetCode, reference = None):
+def add_statementTaldeKodearekin(site, itemCode, statementCode,targetCode, reference = None, referenceCode = None):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo,itemCode)
-	claim = pywikibot.Claim(repo,statementCode) #honako hau da
-	target = pywikibot.ItemPage(repo,targetCode) #album	
+	claim = pywikibot.Claim(repo,statementCode)
+	target = pywikibot.ItemPage(repo,targetCode) 
 	item_dict = item.get()
 	clm_dict = item_dict["claims"]	#statement guztien lista lortu
 	found = False
@@ -72,15 +72,26 @@ def add_statement(site, itemCode, statementCode,targetCode, reference = None):
 	if(not found):
 		claim.setTarget(target) #Set the target value in the local object.
 		if reference is not None:
-			ref_url = pywikibot.Claim(repo, 'P94578')
+			ref_url = pywikibot.Claim(repo, referenceCode)
 			ref_url.setTarget(reference)
 			claim.addSources([ref_url])
 		item.addClaim(claim, summary=u'Statement added')
 
+def add_statement(site, itemCode, statementCode,targetCode, reference = None, referenceCode = None):
+	repo = site.data_repository()
+	item = pywikibot.ItemPage(repo,itemCode)
+	claim = pywikibot.Claim(repo,statementCode)
+	target = pywikibot.ItemPage(repo,targetCode)
+	
+	claim.setTarget(target) #Set the target value in the local object.
+	if reference is not None:
+		ref_url = pywikibot.Claim(repo, referenceCode)
+		ref_url.setTarget(reference)
+		claim.addSources([ref_url])
+	item.addClaim(claim, summary=u'Statement added')
 
 
-
-def add_dateStatement(site, itemCode, statementCode,year): #sorrera edo jaiotze data gehitzeko
+def add_dateStatementTaldeKodearekin(site, itemCode, statementCode,year, reference = None, referenceCode = None): #sorrera edo jaiotze data gehitzeko
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, itemCode)
 	
@@ -91,52 +102,58 @@ def add_dateStatement(site, itemCode, statementCode,year): #sorrera edo jaiotze 
 		dateclaim = pywikibot.Claim(repo,statementCode)
 		dateOfBirth = pywikibot.WbTime(year=year)
 		dateclaim.setTarget(dateOfBirth)
+		if reference is not None:
+			ref_url = pywikibot.Claim(repo, referenceCode)
+			ref_url.setTarget(reference)
+			dateclaim.addSources([ref_url])
 		item.addClaim(dateclaim, summary=u'Adding date')
 		
-		
 
-def add_reference(site, itemCode, statementCode, url):
+def add_dateStatement(site, itemCode, statementCode,year, reference = None, referenceCode = None):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, itemCode)
-	
-	item.get()  # you need to call it to access any data.
-	if statementCode in item.claims: # instance of
-		pywikibot.output(u'Error:Target already exist')
+
+	dateclaim = pywikibot.Claim(repo,statementCode)
+	dateOfBirth = pywikibot.WbTime(year=year)
+	dateclaim.setTarget(dateOfBirth)
+	if reference is not None:
+		ref_url = pywikibot.Claim(repo, referenceCode)
+		ref_url.setTarget(reference)
+		dateclaim.addSources([ref_url])
+	item.addClaim(dateclaim, summary=u'Adding date')
+
+
+
+def statementHoriDu(site, itemCode, statementCode):
+	repo = site.data_repository()
+	item = pywikibot.ItemPage(repo, itemCode)
+	item.get()
+	if statementCode in item.claims:
+		return True
 	else:
-		urlclaim = pywikibot.Claim(repo,statementCode)
-		urlclaim.setTarget(url)
-		item.addClaim(urlclaim, summary=u'Adding URL reference')
-
-
-def get_statement_codes(site, itemCode):
-	repo = site.data_repository()
-	item = pywikibot.ItemPage(repo, itemCode)
-	item_dict = item.get()
-	clm_dict = item_dict["claims"]
-	return clm_dict
-
+		return False
 
 
 
 """
-	funtzioak klaseko  __taldearen_informazioa_lortu(url, datuak) funtzioak itzultzen duen datuak
-	parametro gisa sartzea da asmoa
-	
-	GENEROEKIN ARAZOA: LEHENIK ETA BEHIN GENERO HORIEN KODEA ESKURATU BEHAR DUGU WIKIDATATIK
-	"""
+----------------------TALDEAK SORTUTA EZ DAUDENEAN ERABILTZEKO METODOA: taldeBerriaSortu()-----------------
+"""
+
+
+"""
+Metodo honek hiztegi bat jasota talde berria sortuko du oso osorik
+(diskografia itema sortuz, horren barruan album eta single-en diskografiaren itemak sortuz 
+ eta single eta albumen itemak sortuz)
+"""
 def taldeBerriaSortu(site, datuak):
 	itemKodea = create_item(site,datuak['izena'],1,'')
 	add_statement(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
 	if(datuak['urtea']!=''):
-		add_dateStatement(site, itemKodea, ag.KODEAK['sorrera data'],int(datuak['urtea']))
+		add_dateStatement(site, itemKodea, ag.KODEAK['sorrera data'],int(datuak['urtea']),datuak['url'] , ag.KODEAK['url'])
 	diskografiaKodea=taldeBatenDiskografiaSortu(site,datuak['izena'], datuak['diskak'], itemKodea)
 	add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
-	#for i in len(datuak['generoak']):
-	#	add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK(datuak[i]['generoak']))
-	add_reference(site, itemKodea, ag.KODEAK['url erreferentzia'], datuak['url'])
-
-
-
+	for i in len(datuak['generoak']):
+		add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK(datuak[i]['generoak'], datuak['url'] , ag.KODEAK['url']))
 
 
 
@@ -165,13 +182,6 @@ def taldeBatenAlbumakOrdenKronologikoan(site,izena,diskografiaKodea, diskak, tal
 
 
 
-
-
-
-
-"""
-	ALBUMAREN GENERO ARTISTIKOA LORTZEA FALTA DA
-"""
 def taldeBatenAlbumakSortu(site,izena,taldeKodea,albumakOrdenKronoKode, diskak):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, taldeKodea)
@@ -184,13 +194,8 @@ def taldeBatenAlbumakSortu(site,izena,taldeKodea,albumakOrdenKronoKode, diskak):
 	for i in len(diskak['generoa']):
 		add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK(diskak[i]['generoa']))
 	if diskak['urtea'] != '':
-		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],int(diskak['urtea']))
+		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],int(diskak['urtea']), diskak['url'] , ag.KODEAK['url'])
 	return itemKodea
-
-
-
-
-
 
 
 
@@ -200,58 +205,49 @@ def taldeBatenSingleDiskografia(site,izena,diskografiaKodea, diskak, taldeKodea)
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
 	for i in range(len(diskak)):
 		if(diskak[i]['single'] is True):
-			kodeLag= taldeBatenSingleakSortu(site,diskak[i]['izena'], itemKodea, taldeKodea, int(diskak[i]['urtea']))
+			kodeLag= taldeBatenSingleakSortu(site,diskak[i]['izena'], itemKodea, taldeKodea, diskak, int(diskak[i]['urtea']))
 			add_statement(site, itemKodea, ag.KODEAK['osatuta'],kodeLag)
 	return itemKodea
 
 
 
-def taldeBatenSingleakSortu(site,izena, singleDiskografiaKodea, taldeKodea, data):
+def taldeBatenSingleakSortu(site,izena, singleDiskografiaKodea, taldeKodea, diskak, data):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, taldeKodea)
 	item_dict=item.get()
 	itemKodea=create_item(site, izena,6,  item_dict["labels"]["eu"])
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['single'])
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], singleDiskografiaKodea)
-	add_reference(site, itemKodea, ag.KODEAK['izenburua'],izena)
-	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea)
+	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea, diskak['url'] , ag.KODEAK['url'])
 	if(data!=''):
-		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],data)
+		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],data, diskak['url'] , ag.KODEAK['url'])
 	return itemKodea
 
 
-#BERDINA BAINA KODEETATIK ABIATUZ
+
+
+
+
+
+
+"""
+-------------TALDEA SORTUTA BADAGO ERABILI BEHARKO DEN METODOA: taldeaOsatuKodearekin----------
+"""
 
 def taldeaOsatuKodearekin(site,itemKodea, datuak):
-	add_statement(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
+	add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'], datuak['url'], ag.KODEAK['url'])
 	if(datuak['urtea']!=''):
-		add_dateStatement(site, itemKodea, ag.KODEAK['sorrera data'],int(datuak['urtea']))
-	
-	diskografiaKodea=taldeBatenDiskografiaSortu(site,datuak['izena'], datuak['diskak'], itemKodea)
-	add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
+		add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],int(datuak['urtea']),datuak['url'], ag.KODEAK['url'])
+	baduDiskografia= statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
+	if baduDiskografia:
+		#TODO errore fitxategian idatzi taldearen kodea datuak eskuz sartzeko
+		print(itemKodea)
+
+	else:
+		diskografiaKodea=taldeBatenDiskografiaSortu(site,datuak['izena'], datuak['diskak'], itemKodea)
+		add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
 	for i in len(datuak['generoak']):
 		add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK(datuak[i]['generoak']))
-	add_reference(site, itemKodea, ag.KODEAK['url erreferentzia'], datuak['url'])
-
-
-
-
-def csv_to_dict(taldeak, diskak):
-	with open(taldeak, mode='r') as taldeak_csv:
-		taldeakCsv_reader = csv.DictReader(taldeak_csv)
-		datuak = {}
-		for row in taldeakCsv_reader:
-			datuak['id'] = row[0]
-			datuak['izena']=row[1]
-			datuak['url']=row[2]
-	with open(diskak, mode='r') as diskak_csv:
-		diskakCsv_reader = csv.DictReader(diskak_csv)
-		for row in diskakCsv_reader:
-			if(row[4]==datuak['id']):
-				datuak['diska']['izena']=row[1]
-				datuak['diska']['url']=row[2]
-				datuak['diska']['generoa']=row[3]
-	return datuak
 
 
 
