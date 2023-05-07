@@ -123,6 +123,7 @@ def __taldearen_diskoak_lortu(soup):
 		ag.DISKA_ID+=1
 		diska['izena'] =etiketa.string
 		diska['url'] = etiketa['href'].replace(' ', '%20')
+		diska['urtea'] = div.find_next_sibling('p').contents[0][0:4]
 		__diskaren_informazioa_lortu(diska['url'], diska)
 		diskak.append(diska)
 	return diskak
@@ -184,7 +185,7 @@ def __taldearen_oinarrizko_datuak_lortu(soup):
 				try: 
 					generoak=edukiak[1].split(' ')
 				except:
-					print(edukiak)
+					#print(edukiak)
 					ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + ' --> Generoarekin zerbait gertatu da\n')
 	
 	return (urtea, herria, generoak)
