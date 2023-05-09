@@ -61,3 +61,30 @@ def lortu_datuak(a, b, c):
 
 	"""
 	return __irakurri_diskak(a, b)
+
+
+
+def lortuGeneroak(generoak):
+	emaitza = []
+	if(generoak==''):
+		return None
+	elif generoak[0]=='"':
+		chars='" '
+		emaitza= generoak.translate(str.maketrans('', '', chars))
+		emaitza = emaitza.split(',')
+		return emaitza
+	else:
+		emaitza.append(generoak)
+		return emaitza
+
+def lortuUrteak(urteak):
+	
+	if urteak != '':
+		urteLista=[]
+		emaitza= urteak.split('-')
+		print(emaitza)
+		for elem in emaitza:
+			urteLista.append(int(elem))
+		return urteLista
+	else:
+		return None
