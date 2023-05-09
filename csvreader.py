@@ -6,9 +6,6 @@ Created on Sun May  7 18:43:50 2023
 """
 import csv
 
-file1=''
-file2=''
-file3=''
 
 def __irakurri_taldeak(file1):
 	taldeak=[]
@@ -20,28 +17,28 @@ def __irakurri_taldeak(file1):
 		talde['generoak']=[]
 		talde['diskak']=[]
 		for kar in row[5].split('\''):
-			if kar != '[' and kar != ']' and kar != '\'':
-				talde['generoak'].append(kar)
+			if kar != '[' and kar != ']' and kar != '\'' and kar!=', ':
+				talde['generoak'].append(kar.replace(',', ''))
 		taldeak.append(talde)
 		
 	return taldeak
 
-#TODO k pereza, etxata okurritzen, beste baterako
 def __irakurri_diskak(file1, file2):
 	diskakreader = csv.reader(open(file2, 'r'), delimiter=",")
 	taldeak = __irakurri_taldeak(file1)
-	taldea=1
+	taldea=0
+	taldeaid=1
 	
 	for row in diskakreader:
 		diska ={}
 		diska['id'], diska['izena'], diska['url'], diska['generoa'], diska['single']=row[0], row[1], row[2], row[3], row[4]
 
-		if int(taldeak[1]['id'])<int(row[5]):
-			taldea+=1
-		try:
-			taldeak[taldea-1]['diskak'].append(diska)
-		except:
-			print(taldea)
+		if taldeaid!=int(row[5]):
+			taldeaid=int(row[5])
+			while int(taldeak[taldea]['id'])<taldeaid:
+				taldea+=1
+		if int(taldeak[taldea]['id'])==taldeaid:
+			taldeak[taldea]['diskak'].append(diska)
 	return taldeak
 
 def lortu_datuak(a, b, c):

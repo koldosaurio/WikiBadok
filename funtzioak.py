@@ -73,7 +73,7 @@ def __diskaren_datuak_lortu(soup):
 		if control:
 			generoa=informazioa
 			control=False
-		if 'GENEROA' == informazioa:
+		if 'GENEROA' == informazioa or 'GENEROAK':
 			control=True
 	return generoa
 
