@@ -4,7 +4,11 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
+<<<<<<< HEAD
 recent_files = ['..\\..\\..\\.spyder-py3\\temp.py', 'diskak.csv', 'probak.csv', 'taldeak.csv']
+=======
+recent_files = ['probak.py', 'csvreader.py', 'taldeak.csv']
+>>>>>>> b4ec4bb7cba9a65000cbfa44cb60a30953b19eab
 
 [main]
 version = 0.2.0
