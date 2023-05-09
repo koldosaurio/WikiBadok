@@ -16,7 +16,7 @@ html = urlopen(url).read().decode("utf-8")
 soup =  BeautifulSoup(html, 'html.parser')
 
 print(rd.lortu_datuak('taldeak.csv', 'diskak.csv', ''))
-
+# rd.lortu_datuak('taldeak.csv', 'diskak.csv', '')
 
 # datuak = funtzioak.__izenak_lortu()
 
