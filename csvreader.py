@@ -17,8 +17,8 @@ def __irakurri_taldeak(file1):
 		talde['generoak']=[]
 		talde['diskak']=[]
 		for kar in row[5].split('\''):
-			if kar != '[' and kar != ']' and kar != '\'':
-				talde['generoak'].append(kar)
+			if kar != '[' and kar != ']' and kar != '\'' and kar!=', ':
+				talde['generoak'].append(kar.replace(',', ''))
 		taldeak.append(talde)
 		
 	return taldeak

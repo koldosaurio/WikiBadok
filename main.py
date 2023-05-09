@@ -18,7 +18,6 @@ writersong = csv.writer(filesong)
 for taldea in datuak:
 	try:
 		writer.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
-		
 		for diska in taldea['diskak']:
 			try:
 				writerdisk.writerow([diska['id'], diska['izena'], diska['url'],diska['generoa'], diska['single'], taldea['id']])
