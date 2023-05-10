@@ -31,10 +31,10 @@ def __irakurri_diskak(file1, file2):
 	
 	for row in diskakreader:
 		diska ={}
-		diska['id'], diska['izena'], diska['url'], diska['generoa'], diska['single']=row[0], row[1], row[2], row[3], row[4]
+		diska['id'], diska['izena'], diska['url'], diska['generoa'], diska['single'], diska['urtea']=row[0], row[1], row[2], row[3], row[4], row[5]
 
-		if taldeaid!=int(row[5]):
-			taldeaid=int(row[5])
+		if taldeaid!=int(row[6]):
+			taldeaid=int(row[6])
 			while int(taldeak[taldea]['id'])<taldeaid:
 				taldea+=1
 		if int(taldeak[taldea]['id'])==taldeaid:

@@ -20,7 +20,7 @@ for taldea in datuak:
 		writer.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
 		for diska in taldea['diskak']:
 			try:
-				writerdisk.writerow([diska['id'], diska['izena'], diska['url'],diska['generoa'], diska['single'], taldea['id']])
+				writerdisk.writerow([diska['id'], diska['izena'], diska['url'],diska['generoa'], diska['single'],diska['urtea'], taldea['id']])
 				try:
 					for kanta in diska['kantak']:
 						writersong.writerow([kanta, diska['id']])
