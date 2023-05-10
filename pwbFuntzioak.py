@@ -189,19 +189,20 @@ def taldeBatenAlbumakOrdenKronologikoan(site,diskografiaKodea, talde, taldeKodea
 	return itemKodea
 
 
-#TODO urtea gehitu
+
 def taldeBatenAlbumakSortu(site,diska,taldeKodea,albumakOrdenKronoKode, talde):
 	itemKodea=create_item(site, diska['izena'],4, talde['izena'])
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['album'])
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], albumakOrdenKronoKode)
 	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea)
 	add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
-	generoak = c.lortuGeneroak(talde['diskak']['generoa'])
+	generoak = c.lortuGeneroak(diska['generoa'])
 	if generoak is not None:
 		for genero in generoak:
 			add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK(genero))
-	#if diskak['urtea'] != '':
-	#	add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],int(diskak['urtea']), diskak['url'] , ag.KODEAK['url'])
+	urtea= c.lortuUrteak(diska['urtea'])
+	if urtea is not None:
+		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
 	return itemKodea
 
 
@@ -217,17 +218,14 @@ def taldeBatenSingleDiskografia(site,diskografiaKodea, talde, taldeKodea):
 	return itemKodea
 
 
-#TODO urtea gehitzeko
 def taldeBatenSingleakSortu(site,diska, singleDiskografiaKodea, taldeKodea, talde):
-	repo = site.data_repository()
-	item = pywikibot.ItemPage(repo, taldeKodea)
-	item_dict=item.get()
 	itemKodea=create_item(site, diska['izena'],6,talde['izena'])
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['single'])
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], singleDiskografiaKodea)
 	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea, diska['url'] , ag.KODEAK['url'])
-	#if(data!=''):
-	#	add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],data, diskak['url'] , ag.KODEAK['url'])
+	urtea= c.lortuUrteak(diska['urtea'])
+	if urtea is not None:
+		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
 	return itemKodea
 
 
