@@ -40,7 +40,7 @@ with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:
                                 elif orria[2] == 'musikari' or orria[2] == 'kantari' or orria[2] == 'abeslari' or orria[2] == 'talde':
                                     writerOndo.writerow(orria)
                                 else:
-                                    writerArraro.writerow(orria)
+                                    writerArraro.writerow(orria) # Beste guztiak
                 arraro.close()
             ezDago.close()
         ondo.close()

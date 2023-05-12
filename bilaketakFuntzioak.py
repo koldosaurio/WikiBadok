@@ -7,6 +7,7 @@ Created on Mon May  8 15:54:46 2023
 import pywikibot
 import traceback
 
+# funtzioa
 def wikidatanDago(taldeIzena):
     emaitza = []
     try:
