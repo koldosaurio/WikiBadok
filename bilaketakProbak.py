@@ -4,44 +4,41 @@ Created on Mon May  8 15:50:12 2023
 
 @author: anepa
 """
+import pywikibot
 import bilaketakFuntzioak
 import csv
 
+site = pywikibot.Site("eu", "wikipedia")
 taldeak=[]
-
-# Taldeen CSVa ireki
-with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:
+with open('D:/SourceTree/WikiData/taldeak.csv', 'r') as file:
     csvreader = csv.reader(file)
-    # Errenkada bakoitzeko izena taldeak[] bektorean sartu
     for row in csvreader:
         taldeIzena = row[1]
         taldeak.append(taldeIzena)
-        # Ongi sartuta dauden taldeak
-        with open('./ondo.csv', 'w', newline = '') as ondo:
-            writerOndo = csv.writer(ondo)
-            # Ez dauden taldeak
-            with open('./ezDago.csv', 'w', newline = '') as ezDago:
-                writerEzDago = csv.writer(ezDago)
-                # Musikariak ez diren taldeak
-                with open('./arraro.csv', 'w', newline = '') as arraro:
-                    writerArraro = csv.writer(arraro)
-                    for t in taldeak:
-                        emaitzak = bilaketakFuntzioak.wikidatanDago(t) #Funtzioari deitu
-                        for taldeOrriak in emaitzak : #[orria1, orria2, ...]
-                            for orria in taldeOrriak: #[ID, label, description]
-                                # 1. ez dago ezer
-                                if(orria[0] == 'EzDago'): #Ez du ID
-                                    writerEzDago.writerow(orria)                    
-                                # 2. KEYERROR 
-                                elif orria[1] == 'KeyError' or orria[2] == 'KeyError':
-                                    # KEYERROR AZTERTZEKO FUNTZIOA
-                                    print("KEYERROR")
-                                # 3. musikaria da?
-                                elif orria[2] == 'musikari' or orria[2] == 'kantari' or orria[2] == 'abeslari' or orria[2] == 'talde':
-                                    writerOndo.writerow(orria)
-                                else:
-                                    writerArraro.writerow(orria)
-                arraro.close()
-            ezDago.close()
-        ondo.close()
+        
+    with open('./ezDaudenTaldeak.csv', 'w', newline = '') as ezDaude:
+            writerEzDaude = csv.writer(ezDaude)
+            with open('./badaudenTaldeak.csv', 'w', newline = '') as badaude:
+                writerBadaude = csv.writer(badaude)
+                
+                with open('./taldeHutsak.csv', 'w', newline = '') as hutsak:
+                        writerHutsak = csv.writer(hutsak)
+                        
+                        with open('./taldeArraroak.csv', 'w', newline = '') as arraro:
+                                writerArraro = csv.writer(arraro)
+                                
+                                for taldeIzena in taldeak:
+                                    em = bilaketakFuntzioak.wikidatanDago(site, taldeIzena)
+                                    if(em != []):
+                                        if(em[2] == None): writerHutsak.writerow(em)
+                                        elif('musikari' in em[2] or
+                                           'abeslari' in em[2] or
+                                           'talde' in em[2]):
+                                            writerBadaude.writerow(em)
+                                        else: writerArraro.writerow(em)
+                                    else: writerEzDaude.writerow([taldeIzena])
+                                arraro.close()
+                        hutsak.close()        
+                badaude.close()
+            ezDaude.close()
     file.close()
