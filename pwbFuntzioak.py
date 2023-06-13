@@ -124,11 +124,6 @@ def add_dateStatement(site, itemCode, statementCode,year, reference = None, refe
 
 
 
-
-
-
-
-
 def statementHoriDu(site, itemCode, statementCode):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo, itemCode)
@@ -152,6 +147,7 @@ def statementHoriDu(site, itemCode, statementCode):
 """
 
 #TODO herria sartu
+#TODO lanaren edo eztakitzerren hizkuntza: euskara
 """
 Metodo honek hiztegi bat jasota talde berria sortuko du oso osorik
 (diskografia itema sortuz, horren barruan album eta single-en diskografiaren itemak sortuz 

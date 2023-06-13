@@ -10,7 +10,7 @@ import csv
 taldeak=[]
 
 # Taldeen CSVa ireki
-with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:
+with open('./taldeak.csv', 'r') as file:
     csvreader = csv.reader(file)
     # Errenkada bakoitzeko izena taldeak[] bektorean sartu
     for row in csvreader:
