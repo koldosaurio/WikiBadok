@@ -5,7 +5,7 @@ Q,1,2,2,5,2,4,2,0
 1,2,1, ,k,r,e,w
 e,u,s,k,a,l, ,m,u,s,i,k,a, ,t,a,l,d,e,a
 Q,1,1,7,3,5,2,4,1,5
-2, ,K,a,t,e
+2, ,k,a,t,e
 e,u,s,k,a,l, ,m,u,s,i,k,a, ,t,a,l,d,e,a
 Q,4,5,9,6,9,3,5
 K,e,y,E,r,r,o,r
@@ -62,6 +62,12 @@ Q,9,2,9,9,0,3,5,8
 K,e,y,E,r,r,o,r
 K,e,y,E,r,r,o,r
 Q,8,9,4,8,0,2,0,0
+K,e,y,E,r,r,o,r
+K,e,y,E,r,r,o,r
+Q,1,1,8,4,1,4,0,9,9
+K,e,y,E,r,r,o,r
+K,e,y,E,r,r,o,r
+Q,1,1,8,3,7,5,0,9,4
 K,e,y,E,r,r,o,r
 K,e,y,E,r,r,o,r
 Q,1,1,1,5,0,0,5,8,0
@@ -349,6 +355,9 @@ K,e,y,E,r,r,o,r
 Q,4,6,8,1,0,1,9
 K,e,y,E,r,r,o,r
 K,e,y,E,r,r,o,r
+Q,1,1,8,2,2,0,0,1,1
+K,e,y,E,r,r,o,r
+K,e,y,E,r,r,o,r
 Q,3,1,2,8,4,9,3,6
 K,e,y,E,r,r,o,r
 K,e,y,E,r,r,o,r
@@ -371,9 +380,6 @@ Q,3,3,1,0,8,7,4,6
 K,e,y,E,r,r,o,r
 K,e,y,E,r,r,o,r
 Q,3,4,6,4,1,7,5,6
-K,e,y,E,r,r,o,r
-K,e,y,E,r,r,o,r
-Q,1,1,8,2,2,0,0,1,1
 K,e,y,E,r,r,o,r
 K,e,y,E,r,r,o,r
 Q,2,8,3,1,1,8,1,0

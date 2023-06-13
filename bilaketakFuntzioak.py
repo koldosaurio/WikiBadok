@@ -37,7 +37,7 @@ def wikidatanDago(taldeIzena):
                 emaitza = [item.id, label, description] # Orri hau
                 emaitzak.append(emaitza) # Taldeak dituen orri guztien bektorea
         else: # Ez badago orririk
-            emaitza = ['EzDago', taldeIzena, '', '']
+            emaitza = ['EzDago', taldeIzena, '']
     except Exception:
         traceback.print_exc()
     return emaitzak

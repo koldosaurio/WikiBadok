@@ -37,7 +37,7 @@ with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:
                                     # KEYERROR AZTERTZEKO FUNTZIOA
                                     print("KEYERROR")
                                 # 3. musikaria da?
-                                elif orria[2] == 'musikari' or orria[2] == 'kantari' or orria[2] == 'abeslari' or orria[2] == 'talde':
+                                elif 'musikari' in orria[2] or 'kantari' in orria[2] or 'abeslari' in orria[2] or 'talde' in orria[2]:
                                     writerOndo.writerow(orria)
                                 else:
                                     writerArraro.writerow(orria) # Beste guztiak
