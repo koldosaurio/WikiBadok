@@ -77,12 +77,13 @@ def lortuGeneroak(generoak):
 		emaitza.append(generoak)
 		return emaitza
 
+
+
+
 def lortuUrteak(urteak):
-	
 	if urteak != '':
 		urteLista=[]
 		emaitza= urteak.split('-')
-		print(emaitza)
 		for elem in emaitza:
 			urteLista.append(int(elem))
 		return urteLista
