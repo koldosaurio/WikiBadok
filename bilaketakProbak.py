@@ -6,16 +6,26 @@ Created on Mon May  8 15:50:12 2023
 """
 import csvreader
 import bilaketakFuntzioak
-# import csv
+import csv
 
-a=open('./taldeak.csv', 'w', newline='')
-b= open('./diskak.csv', 'w', newline='')
-c= open('./kantak.csv', 'w', newline='')
+datuak = csvreader.lortu_datuak('./taldeak.csv','./diskak.csv','./kantak.csv');
+fileEz=open('euskarazkoLabelikEz.csv', 'w', newline='')
+fileBai=open('euskarazkoLabelaBai.csv', 'w', newline='')
 
-datuak = csvreader.lortu_datuak(a,b,c);
+writerEz = csv.writer(fileEz)
+writerBai = csv.writer(fileBai)
+
 for taldea in datuak:
-    emaitza = bilaketakFuntzioak.wikidatanDago(taldea);
-    print(taldea + ": " + emaitza);
+    taldeIzena = taldea['izena'] + " "
+    emaitza = bilaketakFuntzioak.wikidatanDago(taldeIzena);
+    if emaitza == False:
+        writerEz.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
+    else:
+        writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
+
+        
+        
+#  HAU LEHEN GENEUKANA DA, IUAL BEANDUO BERKO DEU
 # # Taldeen CSVa ireki
 # with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:
 #     csvreader = csv.reader(file)
