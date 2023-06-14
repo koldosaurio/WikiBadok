@@ -18,7 +18,7 @@ writerBai = csv.writer(fileBai)
 for taldea in datuak:
     taldeIzena = taldea['izena'] + " "
     emaitza = bilaketakFuntzioak.wikidatanDago(taldeIzena);
-    if emaitza == False:
+    if emaitza is False:
         writerEz.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
     else:
         writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])

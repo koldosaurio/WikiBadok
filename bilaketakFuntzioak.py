@@ -6,6 +6,7 @@ Created on Mon May  8 15:54:46 2023
 """
 import pywikibot
 import traceback
+import pwbFuntzioak
 
 # funtzioa
 def wikidatanDago(taldeIzena):
@@ -56,5 +57,29 @@ def wikidatanDago(taldeIzena):
     except Exception:
         traceback.print_exc()
 
+
+def herriaBadago(herriIzena):
+    try:
+        wikidata_site = pywikibot.Site('wikidata', 'wikidata')
+        search_results = wikidata_site.search_entities(herriIzena, language = 'eu')
+        if(search_results != None):
+            for result in search_results:
+                item = pywikibot.ItemPage(wikidata_site, result['id'])
+                item.get()
+                
+                baduHonakoHauDa = pwbFuntzioak.statementHoriDu(wikidata_site, item.id, 'P31')
+                if baduHonakoHauDa:
+                    prop = pywikibot.PropertyPage(wikidata_site, 'P31')
+                    statements = item.claims[prop]
+                    for statement in statements:
+                        value = statement.getTarget()
+                        if 'municipality of Spain' in value or 'commune of France' in value:
+                            return item.id
+        return None
+    except Exception:
+        traceback.print_exc()
+                    
+                
+            
             
     
