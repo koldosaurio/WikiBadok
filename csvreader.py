@@ -78,8 +78,6 @@ def lortuGeneroak(generoak):
 		return emaitza
 
 
-
-
 def lortuUrteak(urteak):
 	if urteak != '':
 		urteLista=[]
@@ -89,3 +87,17 @@ def lortuUrteak(urteak):
 		return urteLista
 	else:
 		return None
+
+
+def lortuHerriak(herriak):
+	emaitza = []
+	if(herriak==''):
+		return None
+	elif herriak[0]=='"':
+		chars='" '
+		emaitza= herriak.translate(str.maketrans('', '', chars))
+		emaitza = emaitza.split(',')
+		return emaitza
+	else:
+		emaitza.append(herriak)
+		return emaitza

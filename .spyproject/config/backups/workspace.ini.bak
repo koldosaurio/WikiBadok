@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['main.py', 'funtzioak.py', 'pwbProbak.py', 'diskak.csv', 'pwbFuntzioak.py', 'taldeak.csv', 'csvreader.py', 'aldagaiGlobalak.py', 'badaudenTaldeak.csv', 'arraro.csv', 'taldeArraroak.csv', 'taldeHutsak.csv', 'pywikibot-Anekoldolorea.lwp']
+recent_files = ['bilaketakFuntzioak.py', 'bilaketakProbak.py', 'csvreader.py', 'pwbMain.py', 'pwbFuntzioak.py', 'aldagaiGlobalak.py', 'main.py', 'taldeak.csv']
 
 [main]
 version = 0.2.0
