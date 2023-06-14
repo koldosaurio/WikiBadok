@@ -66,14 +66,13 @@ def herriaBadago(herriIzena):
             for result in search_results:
                 item = pywikibot.ItemPage(wikidata_site, result['id'])
                 item.get()
-                
                 baduHonakoHauDa = pwbFuntzioak.statementHoriDu(wikidata_site, item.id, 'P31')
                 if baduHonakoHauDa:
-                    prop = pywikibot.PropertyPage(wikidata_site, 'P31')
-                    statements = item.claims[prop]
+                    # prop = pywikibot.PropertyPage(wikidata_site, 'P31')
+                    statements = item.claims['P31']
                     for statement in statements:
                         value = statement.getTarget()
-                        if 'municipality of Spain' in value or 'commune of France' in value:
+                        if 'Q2074737' == value.id or 'Q484170' == value.id:
                             return item.id
         return None
     except Exception:
