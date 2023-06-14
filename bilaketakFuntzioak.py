@@ -55,6 +55,3 @@ def wikidatanDago(taldeIzena):
         return emaitza
     except Exception:
         traceback.print_exc()
-
-            
-    

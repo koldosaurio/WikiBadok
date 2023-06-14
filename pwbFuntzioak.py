@@ -147,7 +147,7 @@ def statementHoriDu(site, itemCode, statementCode):
 """
 
 #TODO herria sartu
-#TODO lanaren edo eztakitzerren hizkuntza: euskara
+
 """
 Metodo honek hiztegi bat jasota talde berria sortuko du oso osorik
 (diskografia itema sortuz, horren barruan album eta single-en diskografiaren itemak sortuz 
@@ -232,6 +232,7 @@ def taldeBatenSingleakSortu(site,diska, singleDiskografiaKodea, taldeKodea, tald
 	add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['single'])
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], singleDiskografiaKodea)
 	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea, diska['url'] , ag.KODEAK['url'])
+	add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
 	urtea= c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
 		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])

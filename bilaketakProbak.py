@@ -23,6 +23,8 @@ for taldea in datuak:
     else:
         writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
 
+
+
         
         
 #  HAU LEHEN GENEUKANA DA, IUAL BEANDUO BERKO DEU
