@@ -7,9 +7,9 @@ from datetime import datetime as dt
 datuak = datuak_lortu()
 print('\nDatuak lortuta\n')
 
-file=open('taldeak.csv', 'w', newline='')
-filedisk= open('diskak.csv', 'w', newline='')
-filesong = open('kantak.csv', 'w', newline='')
+file=open('../datuak/taldeak.csv', 'w', newline='')
+filedisk= open('../datuak/diskak.csv', 'w', newline='')
+filesong = open('../datuak/kantak.csv', 'w', newline='')
 
 writer = csv.writer(file)
 writerdisk = csv.writer(filedisk)
