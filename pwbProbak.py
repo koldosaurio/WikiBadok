@@ -33,7 +33,7 @@ itemCode ='Q229612'
 #funtzioak.add_reference(site, itemCode, 'P93', 'https://es.wikipedia.org/wiki/Harry_Styles')
 
 
-datuak = c.lortu_datuak('taldeak.csv', 'diskak.csv', 'kantak.csv')
+datuak = c.lortu_datuak()
 for datu in datuak:
 	if datu['izena'].lower()=='akaleia':
 		for diska in datu['diskak']:

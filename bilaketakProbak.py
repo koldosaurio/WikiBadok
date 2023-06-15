@@ -9,8 +9,8 @@ import bilaketakFuntzioak
 import csv
 
 datuak = csvreader.lortu_datuak(open('./datuak/taldeak.csv', 'r'), open('./datuak/diskak.csv', 'r'), open('./datuak/kantak.csv', 'r'));
-fileEz=open('euskarazkoLabelikEz.csv', 'w', newline='')
-fileBai=open('euskarazkoLabelaBai.csv', 'w', newline='')
+fileEz=open('./fitxategi_klasifikatuak/euskarazkoLabelikEz.csv', 'w', newline='')
+fileBai=open('./fitxategi_klasifikatuak/euskarazkoLabelaBai.csv', 'w', newline='')
 
 writerEz = csv.writer(fileEz)
 writerBai = csv.writer(fileBai)
