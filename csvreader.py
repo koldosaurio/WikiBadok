@@ -41,29 +41,35 @@ def __irakurri_diskak(file1, file2):
 			taldeak[taldea]['diskak'].append(diska)
 	return taldeak
 
-def lortu_datuak(a = open('./datuak/taldeak.csv', 'r'), b = open('./datuak/diskak.csv', 'r'), c = open('./datuak/kantak.csv', 'r')):
+def lortu_datuak(a = './datuak/taldeak.csv', b = './datuak/diskak.csv', c = './datuak/kantak.csv'):
 	"""
 	
+	!!Adi!!
+	---------
+	WikiBadok karpetatik kanpo baldin bazabiltza komenigarria da a eta b parametroei balioa pasatzea 
+	zure karpetarekiko behar dituzun fitxategien ruta erlatiboak erabiliz.
 
 	Parameters
 	----------
 	a : string
-		taldeak dauden .csv fitxategia (open eginda jada, read moduan irekita)
-		defektuz datuak/taldeak.csv fitxategia irekitzen du
+		taldeak dauden .csv fitxategia
+		defektuz ./datuak/taldeak.csv fitxategia irekitzen du
 	b : string
-		diskak dauden .csv fitxategia (open eginda jada, read moduan irekita)
-		defektuz datuak/diskak.csv fitxategia irekitzen du
+		diskak dauden .csv fitxategia
+		defektuz ./datuak/diskak.csv fitxategia irekitzen du
 	c : string
 		kantak dauden .csv fitxategia (open eginda jada, read moduan irekita)
-		defektuz datuak/kantak.csv fitxategia irekitzen du
+		defektuz ./datuak/kantak.csv fitxategia irekitzen du
 
 	Returns
 	-------
 	list
 		talde zerrenda bat bueltatzen du bere kantekin batera
+		
+	
 
 	"""
-	return __irakurri_diskak(a, b)
+	return __irakurri_diskak(open(a, 'r'), open(b, 'r'))
 
 
 
