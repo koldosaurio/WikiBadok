@@ -10,7 +10,7 @@ ZENBAT_IZEN=10
 IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
 TALDE_ID=1
 DISKA_ID=1
-ERRORE_FITX=open('erroreak.log', 'a')
+ERRORE_FITX=open('./logs/erroreak.log', 'a')
 
 KODEAK={
 'honako hau da':'P31',

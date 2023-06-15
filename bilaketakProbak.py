@@ -8,7 +8,7 @@ import csvreader
 import bilaketakFuntzioak
 import csv
 
-datuak = csvreader.lortu_datuak('./taldeak.csv','./diskak.csv','./kantak.csv');
+datuak = csvreader.lortu_datuak(open('./datuak/taldeak.csv', 'r'), open('./datuak/diskak.csv', 'r'), open('./datuak/kantak.csv', 'r'));
 fileEz=open('euskarazkoLabelikEz.csv', 'w', newline='')
 fileBai=open('euskarazkoLabelaBai.csv', 'w', newline='')
 
@@ -25,8 +25,7 @@ for taldea in datuak:
 
 
 
-        
-        
+
 #  HAU LEHEN GENEUKANA DA, IUAL BEANDUO BERKO DEU
 # # Taldeen CSVa ireki
 # with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:

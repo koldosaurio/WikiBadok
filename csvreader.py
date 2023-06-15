@@ -9,7 +9,7 @@ import csv
 
 def __irakurri_taldeak(file1):
 	taldeak=[]
-	taldereader=csv.reader(open(file1, 'r'), delimiter=',')
+	taldereader=csv.reader(file1, delimiter=',')
 	for row in taldereader:
 		
 		talde={}
@@ -24,7 +24,7 @@ def __irakurri_taldeak(file1):
 	return taldeak
 
 def __irakurri_diskak(file1, file2):
-	diskakreader = csv.reader(open(file2, 'r'), delimiter=",")
+	diskakreader = csv.reader(file2, delimiter=",")
 	taldeak = __irakurri_taldeak(file1)
 	taldea=0
 	taldeaid=1
@@ -41,18 +41,21 @@ def __irakurri_diskak(file1, file2):
 			taldeak[taldea]['diskak'].append(diska)
 	return taldeak
 
-def lortu_datuak(a, b, c):
+def lortu_datuak(a = open('./datuak/taldeak.csv', 'r'), b = open('./datuak/diskak.csv', 'r'), c = open('./datuak/kantak.csv', 'r')):
 	"""
 	
 
 	Parameters
 	----------
 	a : string
-		taldeak dauden .csv fitxategia
+		taldeak dauden .csv fitxategia (open eginda jada, read moduan irekita)
+		defektuz datuak/taldeak.csv fitxategia irekitzen du
 	b : string
-		diskak dauden .csv fitxategia
+		diskak dauden .csv fitxategia (open eginda jada, read moduan irekita)
+		defektuz datuak/diskak.csv fitxategia irekitzen du
 	c : string
-		kantak dauden .csv fitxategia
+		kantak dauden .csv fitxategia (open eginda jada, read moduan irekita)
+		defektuz datuak/kantak.csv fitxategia irekitzen du
 
 	Returns
 	-------
