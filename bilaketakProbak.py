@@ -8,20 +8,22 @@ import csvreader
 import bilaketakFuntzioak
 import csv
 
-datuak = csvreader.lortu_datuak('./taldeak.csv','./diskak.csv','./kantak.csv');
-fileEz=open('euskarazkoLabelikEz.csv', 'w', newline='')
-fileBai=open('euskarazkoLabelaBai.csv', 'w', newline='')
 
-writerEz = csv.writer(fileEz)
-writerBai = csv.writer(fileBai)
+print(bilaketakFuntzioak.wikidatanDago('Iheskide'))
+# datuak = csvreader.lortu_datuak('./taldeak.csv','./diskak.csv','./kantak.csv');
+# fileEz=open('euskarazkoLabelikEz.csv', 'w', newline='')
+# fileBai=open('euskarazkoLabelaBai.csv', 'w', newline='')
 
-for taldea in datuak:
-    taldeIzena = taldea['izena'] + " "
-    emaitza = bilaketakFuntzioak.wikidatanDago(taldeIzena);
-    if emaitza is False:
-        writerEz.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
-    else:
-        writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
+# writerEz = csv.writer(fileEz)
+# writerBai = csv.writer(fileBai)
+
+# for taldea in datuak:
+#     taldeIzena = taldea['izena'] + " "
+#     emaitza = bilaketakFuntzioak.wikidatanDago(taldeIzena);
+#     if emaitza is False:
+#         writerEz.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
+#     else:
+#         writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
 
 
 
