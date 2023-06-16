@@ -9,23 +9,22 @@ import bilaketakFuntzioak
 import csv
 
 
-print(bilaketakFuntzioak.wikidatanDago('Iheskide'))
-# datuak = csvreader.lortu_datuak('./taldeak.csv','./diskak.csv','./kantak.csv');
-# fileEz=open('euskarazkoLabelikEz.csv', 'w', newline='')
-# fileBai=open('euskarazkoLabelaBai.csv', 'w', newline='')
+datuak = csvreader.lortu_datuak('./datuak/taldeak.csv','./datuak/diskak.csv','./datuak/kantak.csv');
+fileEz=open('./fitxategi_klasifikatuak/ezAurkituak.csv', 'w', newline='')
+fileBai=open('./fitxategi_klasifikatuak/aurkituak.csv', 'w', newline='')
 
-# writerEz = csv.writer(fileEz)
-# writerBai = csv.writer(fileBai)
+writerEz = csv.writer(fileEz)
+writerBai = csv.writer(fileBai)
 
-# for taldea in datuak:
-#     taldeIzena = taldea['izena'] + " "
-#     emaitza = bilaketakFuntzioak.wikidatanDago(taldeIzena);
-#     if emaitza is False:
-#         writerEz.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
-#     else:
-#         writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
-
-
+for taldea in datuak:
+    taldeIzena = taldea['izena'] + " "
+    emaitza = bilaketakFuntzioak.wikidatanDago(taldeIzena);
+    print(taldea['id'] + ': ' + emaitza)
+    if emaitza is None:
+        writerEz.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url']])
+    else:
+        writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url'], emaitza])
+    
 
         
         
