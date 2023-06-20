@@ -5,6 +5,7 @@ Created on Sun May  7 18:43:50 2023
 @author: Koldo
 """
 import csv
+import re
 
 
 def __irakurri_taldeak(file1):
@@ -99,14 +100,27 @@ def lortuUrteak(urteak):
 
 
 def lortuHerriak(herriak):
+
+	if(herriak==''):
+		return None
+	else:
+		cadena_sin_parentesis = re.sub(r'\([^()]*\)', '', herriak)
+		resultado = cadena_sin_parentesis.split(',')
+		resultado = [elemento.strip() for elemento in resultado]
+		return resultado
+	
+	
+	
+"""
+def lortuHerriak(herriak):
 	emaitza = []
 	if(herriak==''):
 		return None
-	elif herriak[0]=='"':
-		chars='" '
-		emaitza= herriak.translate(str.maketrans('', '', chars))
-		emaitza = emaitza.split(',')
-		return emaitza
 	else:
-		emaitza.append(herriak)
+		chars='" '
+		lag= herriak.translate(str.maketrans('', '', chars))
+		lag = lag.split(',')
+		for herriak in lag:
+			emaitza. append(re.sub(r"\([^()]*\)", "", herriak))
 		return emaitza
+	"""

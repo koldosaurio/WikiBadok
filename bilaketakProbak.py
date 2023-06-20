@@ -26,8 +26,8 @@ for taldea in datuak:
         writerBai.writerow([taldea['id'], taldea['izena'],taldea['biografia'], taldea['urtea'], taldea['herria'], taldea['generoak'], taldea['url'], emaitza])
     
 
-        
-        
+
+
 #  HAU LEHEN GENEUKANA DA, IUAL BEANDUO BERKO DEU
 # # Taldeen CSVa ireki
 # with open('D:/SourceTree/WikiBadok/taldeak.csv', 'r') as file:
