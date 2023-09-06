@@ -46,3 +46,6 @@ Badok web orrialdetik wikidatara kantak pasatzeko tresna
 		Izenburua
 		Interpretatzailea: x
 		Argitaratze data
+		
+		
+		aldaketa bat androidetik
