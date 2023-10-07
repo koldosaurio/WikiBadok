@@ -37,10 +37,14 @@ KODEAK={
 'musika talde':'Q215380',
 'gizaki':'Q5',
 'sorrera data':'P571',
+'jaiotze data': 'P569',
 'bukaera data':'P582',
+'deuseztapen data':'P576',
 'eraketa lekua':'P740',
+'jaiolekua':'P19',
 'genero artistikoa':'P136',
 'osatuta':'P527',   #taldeetako kideak zeintzuk diren esateko
+'badok':'P9558',
 
 'wikimedia artist discography':'Q104635718',
 'elementuaren zerrenda':'P2354',
