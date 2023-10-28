@@ -8,6 +8,7 @@ Created on Tue Apr 11 16:44:58 2023
 import pywikibot
 import aldagaiGlobalak as ag
 import csvreader as c
+from datetime import datetime as dt
 
 
 def create_item(site,izena, mota,taldeIzena):
@@ -290,6 +291,7 @@ def taldeBatenSingleakSortu(site,diska, singleDiskografiaKodea, taldeKodea, tald
 """
 
 def taldeaOsatuKodearekin(site,itemKodea, talde):
+	
 	add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
 	urteak= c.lortuUrteak(talde['urtea'])
 	if(urteak is not None):
@@ -304,7 +306,7 @@ def taldeaOsatuKodearekin(site,itemKodea, talde):
 			gehitu_herria(site, itemKodea, talde, herriak)
 	baduDiskografia= statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
 	if baduDiskografia:
-		raise Exception(itemKodea + " kodea duen taldeak badu diskografia. Talde izena :"+ talde[['izena']])
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> BADU DISKOGRAFIA \n')
 	else:
 		diskografiaKodea=taldeBatenDiskografiaSortu(site,talde, itemKodea)
 		add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)

@@ -12,7 +12,7 @@ TALDE_ID=1
 DISKA_ID=1
 ERRORE_FITX=open('./logs/erroreak.log', 'a')
 
-def change_errore_fitx(fitx):
+def change_errore_fitx(fitx = './logs/erroreak.log'):
 	"""
 	!!Adi!!
 	-------
