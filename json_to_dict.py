@@ -35,6 +35,5 @@ def musikasten_vs_badok(taldeak, site):
 			bueltatzeko.append(taldea)
 	return bueltatzeko
 
-kontrastatuak = musikasten_vs_badok(ir.lortu_datuak(),pywikibot.Site("wikidata", "wikidata"))
 
 

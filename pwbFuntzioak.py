@@ -100,19 +100,20 @@ def add_dateStatementTaldeKodearekin(site, itemCode, statementCode,year,statemen
 	if(statementCode2 is not None):
 		if (statementCode or statementCode2)in item.claims: #sorrera data dagoeneko baldin badago ez dugu aldatuko
 			pywikibot.output(u'Error:Target already exist')
+			return None
 	elif(statementCode2 is None):
 		if statementCode in item.claims: #sorrera data dagoeneko baldin badago ez dugu aldatuko
 			pywikibot.output(u'Error:Target already exist')
-	else:
-		dateclaim = pywikibot.Claim(repo,statementCode)
-		dateOfBirth = pywikibot.WbTime(year=year)
-		dateclaim.setTarget(dateOfBirth)
-		if reference is not None:
-			ref_url = pywikibot.Claim(repo, referenceCode)
-			ref_url.setTarget(reference)
-			dateclaim.addSources([ref_url])
-		item.addClaim(dateclaim, summary=u'Adding date')
-		
+			return None
+	dateclaim = pywikibot.Claim(repo,statementCode)
+	dateOfBirth = pywikibot.WbTime(year=year)
+	dateclaim.setTarget(dateOfBirth)
+	if reference is not None:
+		ref_url = pywikibot.Claim(repo, referenceCode)
+		ref_url.setTarget(reference)
+		dateclaim.addSources([ref_url])
+	item.addClaim(dateclaim, summary=u'Adding date')
+
 
 def add_dateStatement(site, itemCode, statementCode,year, reference = None, referenceCode = None):
 	repo = site.data_repository()
@@ -141,37 +142,38 @@ def statementHoriDu(site, itemCode, statementCode):
 
 def gehitu_herria(site, itemKodea, talde, herriak):
 	#SALBUESPENAK
-	if herriak == 'Urretxu-Zumarraga':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Urretxu'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Zumarraga'), talde['url'] , ag.KODEAK['url'])
-	
-	elif herriak == 'Oiartzun -Donostia':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Oiartzun'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Donostia'), talde['url'] , ag.KODEAK['url'])
-
-	elif herriak == 'Azpeitia-Zarautz':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Azpeitia'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Zarautz'), talde['url'] , ag.KODEAK['url'])
-
-	elif herriak == 'Beskoitze -Bilbo':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Beskoitze'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Bilbo'), talde['url'] , ag.KODEAK['url'])
-
-	elif herriak == 'Iruñea-Donostia-Bilbo':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Iruñea'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Donostia'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Bilbo'), talde['url'] , ag.KODEAK['url'])
+	for herria in herriak:
+		if herria == 'Urretxu-Zumarraga':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Urretxu'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Zumarraga'], talde['url'] , ag.KODEAK['url'])
 		
-	elif herriak == 'Ziburu-Donibane Lohizune' or herriak == 'Donibane-Ziburu':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Donibane Lohizune'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Ziburu'), talde['url'] , ag.KODEAK['url'])
-
-	elif herriak == 'Uztaritze -Tolosa':
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Uztaritze'), talde['url'] , ag.KODEAK['url'])
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK('Tolosa'), talde['url'] , ag.KODEAK['url'])
+		elif herria == 'Oiartzun -Donostia':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Oiartzun'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Donostia'], talde['url'] , ag.KODEAK['url'])
 	
-	else:
-		add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK(herriak), talde['url'] , ag.KODEAK['url'])
+		elif herria == 'Azpeitia-Zarautz':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Azpeitia'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Zarautz'], talde['url'] , ag.KODEAK['url'])
+	
+		elif herria == 'Beskoitze -Bilbo':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Beskoitze'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Bilbo'], talde['url'] , ag.KODEAK['url'])
+	
+		elif herria == 'Iruñea-Donostia-Bilbo':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Iruñea'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Donostia'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Bilbo'], talde['url'] , ag.KODEAK['url'])
+			
+		elif herria == 'Ziburu-Donibane Lohizune' or herriak == 'Donibane-Ziburu':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Donibane Lohizune'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Ziburu'], talde['url'] , ag.KODEAK['url'])
+	
+		elif herria == 'Uztaritze -Tolosa':
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Uztaritze'], talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK['Tolosa'], talde['url'] , ag.KODEAK['url'])
+		
+		else:
+			add_statement(site, itemKodea, ag.KODEAK['eraketa lekua'], ag.HERRIAK[herria], talde['url'] , ag.KODEAK['url'])
 
 
 
@@ -209,7 +211,7 @@ def taldeBerriaSortu(site, talde):
 	generoak= c.lortuGeneroak(talde['generoak'])
 	if generoak is not None:
 		for genero in generoak:
-			add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK(genero), talde['url'] , ag.KODEAK['url'])
+			add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
 	return itemKodea
 
 
@@ -248,7 +250,11 @@ def taldeBatenAlbumakSortu(site,diska,taldeKodea,albumakOrdenKronoKode, talde):
 	generoak = c.lortuGeneroak(diska['generoa'])
 	if generoak is not None:
 		for genero in generoak:
-			add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK(genero))
+			try:
+				#TODO GEHITU URL-A
+				add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK[genero.lower()])
+			except:
+				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
 	urtea= c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
 		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
@@ -274,6 +280,7 @@ def taldeBatenSingleakSortu(site,diska, singleDiskografiaKodea, taldeKodea, tald
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], singleDiskografiaKodea)
 	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea, diska['url'] , ag.KODEAK['url'])
 	add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
+	#TODO GENEROAK GEHITU URLAREKIN
 	urtea= c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
 		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
@@ -310,7 +317,9 @@ def taldeaOsatuKodearekin(site,itemKodea, talde):
 	else:
 		diskografiaKodea=taldeBatenDiskografiaSortu(site,talde, itemKodea)
 		add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
-		generoak= talde['generoak']
-		if generoak is not None:
-			for genero in generoak:
-				add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
+	generoak= talde['generoak']
+	if generoak is not None:
+		for genero in generoak:
+			add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
+	add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], talde['url'].split("/")[-1])
+
