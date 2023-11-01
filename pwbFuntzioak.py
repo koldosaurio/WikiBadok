@@ -251,13 +251,13 @@ def taldeBatenAlbumakSortu(site,diska,taldeKodea,albumakOrdenKronoKode, talde):
 	if generoak is not None:
 		for genero in generoak:
 			try:
-				#TODO GEHITU URL-A
-				add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK[genero.lower()])
+				add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK[genero.lower()], diska['url'] , ag.KODEAK['url'])
 			except:
 				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
 	urtea= c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
 		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
+	add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
 	return itemKodea
 
 
@@ -280,10 +280,17 @@ def taldeBatenSingleakSortu(site,diska, singleDiskografiaKodea, taldeKodea, tald
 	add_statement(site, itemKodea, ag.KODEAK['honen parte da'], singleDiskografiaKodea)
 	add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea, diska['url'] , ag.KODEAK['url'])
 	add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
-	#TODO GENEROAK GEHITU URLAREKIN
+	generoak = c.lortuGeneroak(diska['generoa'])
+	if generoak is not None:
+		for genero in generoak:
+			try:
+				add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'],ag.GENEROAK[genero.lower()], diska['url'] , ag.KODEAK['url'])
+			except:
+				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
 	urtea= c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
 		add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
+	add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
 	return itemKodea
 
 
