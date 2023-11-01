@@ -180,6 +180,132 @@ def __gehitu_herria(site, itemKodea, talde, herriak):
 
 
 
+def __taldeBatenDiskografiaSortu(site, talde, taldeKodea):
+	itemKodea=__create_item(site, talde['izena'],2,'')
+	__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia artist discography'])
+	albumakOrdenKronoKode = __taldeBatenDiskoDiskografiaSortu(site,itemKodea, talde, taldeKodea, False)
+	__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],albumakOrdenKronoKode[0])
+	if albumakOrdenKronoKode[1]:
+		singleDiskografiaKode= __taldeBatenDiskoDiskografiaSortu(site,itemKodea, talde, taldeKodea, True)
+		__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],singleDiskografiaKode[0])
+	return itemKodea
+
+
+
+def __taldeBatenDiskoDiskografiaSortu(site, diskografiaKodea, talde, taldeKodea, single):
+	sortuSingle = False
+	
+	if not single:#albumen diskografia sortu behar dugu
+		itemKodea = __create_item(site, talde['izena'], 3, '')  # Album diskografia sortu
+		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia albums discography'])
+	else:#single diskografia sortu behar dugu
+		itemKodea=__create_item(site,talde['izena'],5,'')
+		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['singles discography'])
+	__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
+	
+	for diska in talde['diskak']:
+		if not single and diska['single'] == 'False':
+			badagoDiskaKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['album'])
+			if badagoDiskaKodea is None:
+				kodeLag = __taldeBatenDiskaSortu(site, diska, taldeKodea, itemKodea, talde, False)
+				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+			else:
+				kodeLag = __taldeBatenDiskaAldatu(site, diska, taldeKodea, itemKodea, talde, badagoDiskaKodea, False)
+				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+		
+		elif single and diska['single']=='True':
+			badagoSingleKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['single'])
+			if badagoSingleKodea is None:
+				kodeLag = __taldeBatenDiskaSortu(site, diska, taldeKodea, itemKodea, talde, True)
+				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+			else:
+				kodeLag = __taldeBatenDiskaAldatu(site, diska,itemKodea, taldeKodea, talde, badagoSingleKodea, True)
+				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+
+		elif diska['single']==True:
+			sortuSingle==True
+	__add_statement(site, itemKodea, ag.KODEAK['honen zerrenda'], ag.KODEAK['album'])
+	return (itemKodea, sortuSingle)
+
+
+def __badagoDiska(site, diska, taldeKodea, singleValbum):
+	query_template = """
+	SELECT ?item ?itemLabel WHERE {{
+		SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
+		?item wdt:P175 wd:{taldeKodea}.
+		?item wdt:P31 wd:{singleValbum}.
+	}}
+	"""
+	query = query_template.format(taldeKodea = taldeKodea)
+	generator = pagegenerators.WikidataSPARQLPageGenerator(query, site=site)
+	generator = pagegenerators.PreloadingEntityGenerator(generator)
+	for item in generator:
+		if diska['izena'].lower().replace(" ", "") in item.title().lower().replace(" ", ""):
+			return item.id
+		else:
+			return None
+
+
+
+def __taldeBatenDiskaAldatu(site, diska, taldeKodea, albumakOrdenKronoKode, talde, diskaKodea, single):
+    # titulua aldatu eta (albuma) jarri
+	if not single:
+		repo = site.data_repository()
+		item = pywikibot.ItemPage(repo, diskaKodea)
+		label= {"eu": diska['izena'] + " (albuma)", "en":diska['izena'] +" (album)", "es": diska['izena'] +" (album)"}
+		item.editLabels(labels=label, summary="Label-ak gehitu")
+		description={"en":talde['izena']+"'s album", "es":"Álbum de "+ talde['izena'] , "eu": talde['izena'] + "(r)en albuma"}
+		item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+	else:
+		repo = site.data_repository()
+		item = pywikibot.ItemPage(repo, diskaKodea)
+		label= {"eu": diska['izena']+ " (single)", "en": diska['izena'] + " (single)", "es": diska['izena'] +" (single)"}
+		item.editLabels(labels=label, summary="Label-ak gehitu")
+		description={"en":talde['izena'] +"'s single", "es":"Single de "+ talde['izena'], "eu": talde['izena'] +"(r)en single-a"}
+		item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+		
+	# honen parte da ... -ren albumak
+	____add_statementTaldeKodearekin(site,diskaKodea, ag.KODEAK['honen parte da'], albumakOrdenKronoKode)
+	# genero artistikoa
+	generoak = c.lortuGeneroak(diska['generoa'])
+	if generoak is not None:
+		for genero in generoak:
+			try:
+				____add_statementTaldeKodearekin(site, diskaKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()] ,diska['url'], ag.KODEAK['url'])
+			except:
+				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
+	# argitaratze-data
+	urtea = c.lortuUrteak(diska['urtea'])
+	if urtea is not None:
+		____add_dateStatementTaldeKodearekin(site, diskaKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
+	____add_statementTaldeKodearekin(site, diskaKodea, ag.KODEAK['badok'], ("/").join(diska['url'].split("/")[-2]))
+	return diskaKodea
+
+
+
+def __taldeBatenDiskaSortu(site, diska, taldeKodea, diskaDiskografiaKodea, talde, single):
+	if single:
+		itemKodea=__create_item(site, diska['izena'],6,talde['izena'])
+		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['single'])
+	else:
+		itemKodea = __create_item(site, diska['izena'], 4, talde['izena'])
+		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['album'])
+	__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskaDiskografiaKodea)
+	__add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea)
+	__add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
+	generoak = c.lortuGeneroak(diska['generoa'])
+	if generoak is not None:
+		for genero in generoak:
+			try:
+				__add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()],diska['url'], ag.KODEAK['url'])
+			except:
+				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
+	urtea = c.lortuUrteak(diska['urtea'])
+	if urtea is not None:
+		__add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
+	____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
+	return itemKodea
+
 
 
 
@@ -217,105 +343,58 @@ def taldeBerriaSortu(site, talde):
 
 
 
-def __taldeBatenDiskografiaSortu(site, talde, taldeKodea):
-	itemKodea=__create_item(site, talde['izena'],2,'')
-	__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia artist discography'])
-	albumakOrdenKronoKode = __taldeBatenAlbumakOrdenKronologikoan(site,itemKodea, talde, taldeKodea)
-	__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],albumakOrdenKronoKode[0])
-	if albumakOrdenKronoKode[1]:
-		singleDiskografiaKode= __taldeBatenSingleDiskografia(site,itemKodea, talde, taldeKodea)
-		__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],singleDiskografiaKode)
-	return itemKodea
 
 
+"""
+-------------TALDEA SORTUTA BADAGO ERABILI BEHARKO DEN METODOA: taldeaOsatuKodearekin----------
+"""
 
-def __taldeBatenAlbumakOrdenKronologikoan(site, diskografiaKodea, talde, taldeKodea):
-	sortuSingle = False
-	itemKodea = __create_item(site, talde['izena'], 3, '')  # Album diskografia sortu
-	__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia albums discography'])
-	__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
-	for diska in talde['diskak']:
-		if diska['single'] == 'False':
-			badagoDiskaKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['album'])
-			if badagoDiskaKodea is None:
-				kodeLag = __taldeBatenAlbumakSortu(site, diska, taldeKodea, itemKodea, talde)
-				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
-			else:
-				kodeLag = __taldeBatenAlbumaAldatu(site, diska, taldeKodea, itemKodea, talde, badagoDiskaKodea)
-				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+def taldeaOsatuKodearekin(site,itemKodea, talde):
+	
+	____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
+	urteak= c.lortuUrteak(talde['urtea'])
+	if(urteak is not None):
+		if(len(urteak)==1):
+			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'], talde['url'] , ag.KODEAK['url'])
 		else:
-			sortuSingle = True
-	__add_statement(site, itemKodea, ag.KODEAK['honen zerrenda'], ag.KODEAK['album'])
-	return (itemKodea, sortuSingle)
-
-
-
-def __badagoDiska(site, diska, taldeKodea, singleValbum):
-	query_template = """
-	SELECT ?item ?itemLabel WHERE {{
-		SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
-		?item wdt:P175 wd:{taldeKodea}.
-		?item wdt:P31 wd:{singleValbum}.
-	}}
-	"""
-	query = query_template.format(taldeKodea = taldeKodea)
-	generator = pagegenerators.WikidataSPARQLPageGenerator(query, site=site)
-	generator = pagegenerators.PreloadingEntityGenerator(generator)
-	for item in generator:
-		if diska['izena'].lower().replace(" ", "") in item.title().lower().replace(" ", ""):
-			return item.id
-		else:
-			return None
-
-
-
-def __taldeBatenAlbumaAldatu(site, diska, taldeKodea, albumakOrdenKronoKode, talde, albumKodea):
-    # titulua aldatu eta (albuma) jarri
-	repo = site.data_repository()
-	item = pywikibot.ItemPage(repo, taldeKodea)
-	label= {"eu": diska['izena'] + " (albuma)", "en":diska['izena'] +" (album)", "es": diska['izena'] +" (album)"}
-	item.editLabels(labels=label, summary="Label-ak gehitu")
-	description={"en":talde['izena']+"'s album", "es":"Álbum de "+ talde['izena'] , "eu": talde['izena'] + "(r)en albuma"}
-	item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
-	# honen parte da ... -ren albumak
-	____add_statementTaldeKodearekin(site,albumKodea, ag.KODEAK['honen parte da'], albumakOrdenKronoKode)
-	# genero artistikoa
-	generoak = c.lortuGeneroak(diska['generoa'])
+			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'],talde['url'] , ag.KODEAK['url'])
+			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['bukaera data'],urteak[1],ag.KODEAK['deuseztapen data'], talde['url'] , ag.KODEAK['url'])
+	if not __statementHoriDu(site, itemKodea, ag.KODEAK['eraketa lekua']) and not __statementHoriDu(site, itemKodea, ag.KODEAK['jaiolekua']) :
+		herriak = c.lortuHerriak(talde['herria'])
+		if herriak is not None:
+			__gehitu_herria(site, itemKodea, talde, herriak)
+	baduDiskografia= __statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
+	if baduDiskografia:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> BADU DISKOGRAFIA \n')
+	else:
+		diskografiaKodea=__taldeBatenDiskografiaSortu(site,talde, itemKodea)
+		__add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
+	generoak= talde['generoak']
 	if generoak is not None:
 		for genero in generoak:
-			try:
-				____add_statementTaldeKodearekin(site, albumKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()] ,diska['url'], ag.KODEAK['url'])
-			except:
-				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
-	# argitaratze-data
-	urtea = c.lortuUrteak(diska['urtea'])
-	if urtea is not None:
-		____add_dateStatementTaldeKodearekin(site, albumKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
-	____add_statementTaldeKodearekin(site, albumKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
-	return albumKodea
-
-
-def __taldeBatenAlbumakSortu(site, diska, taldeKodea, albumakOrdenKronoKode, talde):
-	itemKodea = __create_item(site, diska['izena'], 4, talde['izena'])
-	__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['album'])
-	__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], albumakOrdenKronoKode)
-	__add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea)
-	__add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
-	generoak = c.lortuGeneroak(diska['generoa'])
-	if generoak is not None:
-		for genero in generoak:
-			try:
-				__add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()],diska['url'], ag.KODEAK['url'])
-			except:
-				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
-	urtea = c.lortuUrteak(diska['urtea'])
-	if urtea is not None:
-		__add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
-	____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
-	return itemKodea
+			____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
+	____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], talde['url'].split("/")[-1])
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
 def __taldeBatenSingleDiskografia(site,diskografiaKodea, talde, taldeKodea):
 	itemKodea=__create_item(site,talde['izena'],5,'')
 	__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['singles discography'])
@@ -337,9 +416,6 @@ def __taldeBatenSingleDiskografia(site,diskografiaKodea, talde, taldeKodea):
 	__add_statement(site, itemKodea, ag.KODEAK['honen zerrenda'], ag.KODEAK['single'])
 	return itemKodea
 
-
-
-
 def __taldeBatenSingleakAldatu(site, diska, singleDiskografiaKodea, taldeKodea, talde, singleKodea):
     # titulua aldatu eta (albuma) jarri
 	repo = site.data_repository()
@@ -347,7 +423,6 @@ def __taldeBatenSingleakAldatu(site, diska, singleDiskografiaKodea, taldeKodea, 
 	label= {"eu": diska['izena']+ " (single)", "en": diska['izena'] + " (single)", "es": diska['izena'] +" (single)"}
 	item.editLabels(labels=label, summary="Label-ak gehitu")
 	description={"en":talde['izena'] +"'s single", "es":"Single de "+ talde['izena'], "eu": talde['izena'] +"(r)en single-a"}
-	item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 	item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 	# honen parte da ... -ren albumak
 	____add_statementTaldeKodearekin(site,singleKodea, ag.KODEAK['honen parte da'], singleDiskografiaKodea)
@@ -384,41 +459,4 @@ def __taldeBatenSingleakSortu(site,diska, singleDiskografiaKodea, taldeKodea, ta
 	if urtea is not None:
 		__add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'],urtea[0], diska['url'] , ag.KODEAK['url'])
 	return itemKodea
-
-
-
-
-
-
-
-
-"""
--------------TALDEA SORTUTA BADAGO ERABILI BEHARKO DEN METODOA: taldeaOsatuKodearekin----------
-"""
-
-def taldeaOsatuKodearekin(site,itemKodea, talde):
-	
-	____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
-	urteak= c.lortuUrteak(talde['urtea'])
-	if(urteak is not None):
-		if(len(urteak)==1):
-			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'], talde['url'] , ag.KODEAK['url'])
-		else:
-			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'],talde['url'] , ag.KODEAK['url'])
-			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['bukaera data'],urteak[1],ag.KODEAK['deuseztapen data'], talde['url'] , ag.KODEAK['url'])
-	if not __statementHoriDu(site, itemKodea, ag.KODEAK['eraketa lekua']) and not __statementHoriDu(site, itemKodea, ag.KODEAK['jaiolekua']) :
-		herriak = c.lortuHerriak(talde['herria'])
-		if herriak is not None:
-			__gehitu_herria(site, itemKodea, talde, herriak)
-	baduDiskografia= __statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
-	if baduDiskografia:
-		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> BADU DISKOGRAFIA \n')
-	else:
-		diskografiaKodea=__taldeBatenDiskografiaSortu(site,talde, itemKodea)
-		__add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
-	generoak= talde['generoak']
-	if generoak is not None:
-		for genero in generoak:
-			____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
-	____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], talde['url'].split("/")[-1])
-
+'''
