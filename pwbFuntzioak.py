@@ -39,12 +39,12 @@ def create_item(site,izena, mota,taldeIzena):
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==5: #taldearen single diskografia sortu
-		label= {"eu": izena+'(r)en sinlge diskografia', "en": izena + "'s singles discography", "es": "Discografía de singles de " + izena}
+		label= {"eu": izena+'(r)en single diskografia', "en": izena + "'s singles discography", "es": "Discografía de singles de " + izena}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
-		description={"en":"Wikimedia singles discography", "es":"Discografía de sinlges de Wikimedia", "eu": "Wikimediako single diskografia"}
+		description={"en":"Wikimedia singles discography", "es":"Discografía de singles de Wikimedia", "eu": "Wikimediako single diskografia"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
-	elif mota==6: #talde baten sinlgeak
+	elif mota==6: #talde baten singleak
 		label= {"eu": izena+ " (single)", "en": izena + " (single)", "es": izena +" (single)"}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
 		description={"en":taldeIzena+"'s single", "es":"Single de "+ taldeIzena, "eu": taldeIzena +"(r)en single-a"}
