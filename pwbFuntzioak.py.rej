@@ -1,0 +1,10 @@
+diff a/pwbFuntzioak.py b/pwbFuntzioak.py	(rejected hunks)
+@@ -9,6 +9,8 @@
+ import aldagaiGlobalak as ag
+ import csvreader as c
+ from datetime import datetime as dt
++from pywikibot.data import pagegenerators
++
+ 
+ 
+ def create_item(site,izena, mota,taldeIzena):
