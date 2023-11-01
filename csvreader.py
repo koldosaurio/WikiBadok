@@ -108,19 +108,3 @@ def lortuHerriak(herriak):
 		resultado = cadena_sin_parentesis.split(',')
 		resultado = [elemento.strip() for elemento in resultado]
 		return resultado
-	
-	
-	
-"""
-def lortuHerriak(herriak):
-	emaitza = []
-	if(herriak==''):
-		return None
-	else:
-		chars='" '
-		lag= herriak.translate(str.maketrans('', '', chars))
-		lag = lag.split(',')
-		for herriak in lag:
-			emaitza. append(re.sub(r"\([^()]*\)", "", herriak))
-		return emaitza
-	"""

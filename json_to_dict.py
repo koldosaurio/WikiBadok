@@ -3,7 +3,7 @@ import pywikibot
 import csvreader as ir
 
 
-def getLabel(site, itemCode):
+def __getLabel(site, itemCode):
 	repo = site.data_repository()
 	item = pywikibot.ItemPage(repo,itemCode)
 	item_dict = item.get()
@@ -14,20 +14,20 @@ def getLabel(site, itemCode):
 		label = None
 	return label
 
-def lortu_musikastenID(site):
+def __lortu_musikastenID(site):
 	with open("./musikastenID/musikastenID.json", 'r') as mID:
 		hizt = json.load(mID)
 		emaitza = {}
 		for elem in hizt:
 			url = elem['item'].split('/')
 			itemCode = url[-1]
-			izena = getLabel(site, itemCode)
+			izena = __getLabel(site, itemCode)
 			if izena != None:
 				emaitza[izena.lower().replace(" ", "")] = itemCode
 		return(emaitza)
 	
 def musikasten_vs_badok(taldeak, site):
-	emaitza = lortu_musikastenID(site)
+	emaitza = __lortu_musikastenID(site)
 	bueltatzeko=[]
 	for taldea in taldeak:
 		if taldea['izena'].lower().replace(" ", "") in emaitza.keys():
