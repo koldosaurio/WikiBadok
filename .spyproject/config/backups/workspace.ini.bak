@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['bilaketakFuntzioak.py', 'bilaketakProbak.py', 'csvreader.py', 'pwbMain.py', 'pwbFuntzioak.py', 'aldagaiGlobalak.py', 'main.py', 'taldeak.csv']
+recent_files = ['main.py', 'json_to_dict.py', 'pwbFuntzioak.py', 'musikastenID\\sartutakoak.json', 'aldagaiGlobalak.py', 'csvreader.py', 'bilaketakFuntzioak.py']
 
 [main]
 version = 0.2.0

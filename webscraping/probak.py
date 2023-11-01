@@ -18,6 +18,7 @@ soup =  BeautifulSoup(html, 'html.parser')
 # rd.lortu_datuak('taldeak.csv', 'diskak.csv', '')
 print(rd.lortu_datuak('taldeak.csv', 'diskak.csv', ''))
 
+
 # datuak = funtzioak.__izenak_lortu()
 
 
