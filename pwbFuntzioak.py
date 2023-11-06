@@ -9,7 +9,11 @@ import pywikibot
 import aldagaiGlobalak as ag
 import csvreader as c
 from datetime import datetime as dt
-from pywikibot.data import pagegenerators
+from pywikibot import pagegenerators
+
+
+ag.change_errore_fitx('./logs/exekuzio_erroreak.log')
+
 
 
 def __create_item(site,izena, mota,taldeIzena):
@@ -181,129 +185,274 @@ def __gehitu_herria(site, itemKodea, talde, herriak):
 
 
 def __taldeBatenDiskografiaSortu(site, talde, taldeKodea):
-	itemKodea=__create_item(site, talde['izena'],2,'')
-	__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia artist discography'])
-	albumakOrdenKronoKode = __taldeBatenDiskoDiskografiaSortu(site,itemKodea, talde, taldeKodea, False)
-	__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],albumakOrdenKronoKode[0])
-	if albumakOrdenKronoKode[1]:
-		singleDiskografiaKode= __taldeBatenDiskoDiskografiaSortu(site,itemKodea, talde, taldeKodea, True)
-		__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],singleDiskografiaKode[0])
-	return itemKodea
+	itemKodea = None
+	try:
+		itemKodea=__create_item(site, talde['izena'],2,'')
+		try:
+			__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia artist discography'])
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIAN HONAKO HAU DA GEHITZEAN\n')
+		
+		albumakOrdenKronoKode = __taldeBatenDiskoDiskografiaSortu(site,itemKodea, talde, taldeKodea, False)
+		if albumakOrdenKronoKode is not None:
+			try:
+				__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],albumakOrdenKronoKode[0])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIAN ELEMENTUAREN ZERRENDA:album diskografia GEHITZEAN\n')
 
+			if albumakOrdenKronoKode[1]:
+				singleDiskografiaKode= __taldeBatenDiskoDiskografiaSortu(site,itemKodea, talde, taldeKodea, True)
+				if singleDiskografiaKode is not None:
+					try:
+						__add_statement(site, itemKodea, ag.KODEAK['elementuaren zerrenda'],singleDiskografiaKode[0])
+					except:
+						ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIAN ELEMENTUAREN ZERRENDA:single diskografia GEHITZEAN\n')
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIA SORTZEAN; EZ DA SORTU ETA EZ DA TALDEAN GEHITU\n')
+
+	return itemKodea
 
 
 def __taldeBatenDiskoDiskografiaSortu(site, diskografiaKodea, talde, taldeKodea, single):
 	sortuSingle = False
+	itemKodea=None
+	if single:
+		non = 'SINGLE'
+	else:
+		non = 'ALBUM'
 	
 	if not single:#albumen diskografia sortu behar dugu
-		itemKodea = __create_item(site, talde['izena'], 3, '')  # Album diskografia sortu
-		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia albums discography'])
-	else:#single diskografia sortu behar dugu
-		itemKodea=__create_item(site,talde['izena'],5,'')
-		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['singles discography'])
-	__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
-	
-	for diska in talde['diskak']:
-		if not single and diska['single'] == 'False':
-			badagoDiskaKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['album'])
-			if badagoDiskaKodea is None:
-				kodeLag = __taldeBatenDiskaSortu(site, diska, taldeKodea, itemKodea, talde, False)
-				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
-			else:
-				kodeLag = __taldeBatenDiskaAldatu(site, diska, taldeKodea, itemKodea, talde, badagoDiskaKodea, False)
-				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
-		
-		elif single and diska['single']=='True':
-			badagoSingleKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['single'])
-			if badagoSingleKodea is None:
-				kodeLag = __taldeBatenDiskaSortu(site, diska, taldeKodea, itemKodea, talde, True)
-				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
-			else:
-				kodeLag = __taldeBatenDiskaAldatu(site, diska,itemKodea, taldeKodea, talde, badagoSingleKodea, True)
-				__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+		try:
+			itemKodea = __create_item(site, talde['izena'], 3, '')  # Album diskografia sortu
+			try:
+				__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['wikimedia albums discography'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN ALBUM DISKOGRAFIAN HONAKO HAU DA GEHITZEAN\n')
 
-		elif diska['single']==True:
-			sortuSingle==True
-	__add_statement(site, itemKodea, ag.KODEAK['honen zerrenda'], ag.KODEAK['album'])
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diskografiaKodea + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIAN ALBUM DISKOGRAFIA SORTZEAN; EZ DA SORTU ETA EZ DA DISKOGRAFIAN GEHITU (SINLGE DISKOGRAFIA EZ DA SORTUKO)\n')
+
+	else:#single diskografia sortu behar dugu
+		try:
+			itemKodea=__create_item(site,talde['izena'],5,'')
+			try:
+				__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['singles discography'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN SINGLE DISKOGRAFIAN HONAKO HAU DA GEHITZEAN\n')
+
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diskografiaKodea + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIAN SINGLE DISKOGRAFIA SORTZEAN; EZ DA SORTU ETA EZ DA DISKOGRAFIAN GEHITU\n')
+
+	
+	if itemKodea is not None:
+		try:
+			__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskografiaKodea)
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN '+ non +' DISKOGRAFIAN HONEN PARTE DA GEHITZEAN\n')
+
+		for diska in talde['diskak']:
+			if not single and diska['single'] == 'False':
+
+				badagoDiskaKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['album'])
+				if badagoDiskaKodea!=0:
+					if badagoDiskaKodea is None:
+						kodeLag = __taldeBatenDiskaSortu(site, diska, taldeKodea, itemKodea, talde, False)
+						if kodeLag is not None:
+							try:
+								__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+							except:
+								ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN '+ non +' DISKOGRAFIAN OSATUTA GEHITZEAN\n')
+
+					else:
+						kodeLag = __taldeBatenDiskaAldatu(site, diska, taldeKodea, itemKodea, talde, badagoDiskaKodea, False)
+						try:
+							__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+						except:
+							ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN '+ non +' DISKOGRAFIAN OSATUTA GEHITZEAN\n')
+
+
+			elif single and diska['single']=='True':
+				badagoSingleKodea = __badagoDiska(site, diska, taldeKodea, ag.KODEAK['single'])
+				if badagoSingleKodea!=0:
+					if badagoSingleKodea is None:
+						kodeLag = __taldeBatenDiskaSortu(site, diska, taldeKodea, itemKodea, talde, True)
+						if kodeLag is not None:
+							try:
+								__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+							except:
+								ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN '+ non +' DISKOGRAFIAN OSATUTA GEHITZEAN\n')
+
+					else:
+						kodeLag = __taldeBatenDiskaAldatu(site, diska,itemKodea, taldeKodea, talde, badagoSingleKodea, True)
+						try:
+							__add_statement(site, itemKodea, ag.KODEAK['osatuta'], kodeLag, diska['url'], ag.KODEAK['url'])
+						except:
+							ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN '+ non +' DISKOGRAFIAN OSATUTA GEHITZEAN\n')
+
+	
+			elif diska['single']==True:
+				sortuSingle==True
+		try:
+			__add_statement(site, itemKodea, ag.KODEAK['honen zerrenda'], ag.KODEAK['album'])
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +itemKodea + ') ---> ERROREA EGON DA TALDEAREN '+ non +' DISKOGRAFIAN HONEN ZERRENDA GEHITZEAN\n')
+
 	return (itemKodea, sortuSingle)
 
+def lortu_izenburua(site, item_kodea):
+	try:
+		item = pywikibot.ItemPage(site, item_kodea)
+		# Fetch the label (title) in a specific language
+		language = "eu"  # Replace with the desired language code
+		title = item.get()['labels'].get(language)
+		if title is None:
+			language = "en"
+			title = item.get()['labels'].get(language)
+		if title is None:
+			language = "es"
+			title = item.get()['labels'].get(language)
+		return title.lower().replace(" ", "")
+	except:
+		return ''
 
 def __badagoDiska(site, diska, taldeKodea, singleValbum):
-	query_template = """
-	SELECT ?item ?itemLabel WHERE {{
-		SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
-		?item wdt:P175 wd:{taldeKodea}.
-		?item wdt:P31 wd:{singleValbum}.
-	}}
-	"""
-	query = query_template.format(taldeKodea = taldeKodea)
-	generator = pagegenerators.WikidataSPARQLPageGenerator(query, site=site)
-	generator = pagegenerators.PreloadingEntityGenerator(generator)
-	for item in generator:
-		if diska['izena'].lower().replace(" ", "") in item.title().lower().replace(" ", ""):
-			return item.id
+	try:
+		query_template = """
+		SELECT ?item ?itemLabel 
+		WHERE {{
+			SERVICE wikibase:label {{ bd:serviceParam wikibase:language "eus". }}
+			?item wdt:P175 wd:{taldeKodea}.
+			?item wdt:P31 wd:{singleValbum}.
+		}}
+		"""
+		query = query_template.format(taldeKodea=taldeKodea, singleValbum=singleValbum)
+		generator = pagegenerators.WikidataSPARQLPageGenerator(query, site=site)
+		generator = pagegenerators.PreloadingEntityGenerator(generator)
+		for item in generator:
+			diska_izena=diska['izena'].lower().replace(" ", "")
+			item_kodea = item.title()
+			item_izena = lortu_izenburua(site, item_kodea)
+			if diska_izena in item_izena:
+				return item.id
 		else:
 			return None
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + diska['izena'] + ' (' +taldeKodea + ') ---> ERROREA EGON DA TALDEAREN DISKA WIKIDATAN BILATZEAN\n')
+
+	return 0
 
 
 
 def __taldeBatenDiskaAldatu(site, diska, taldeKodea, albumakOrdenKronoKode, talde, diskaKodea, single):
     # titulua aldatu eta (albuma) jarri
-	if not single:
-		repo = site.data_repository()
-		item = pywikibot.ItemPage(repo, diskaKodea)
-		label= {"eu": diska['izena'] + " (albuma)", "en":diska['izena'] +" (album)", "es": diska['izena'] +" (album)"}
-		item.editLabels(labels=label, summary="Label-ak gehitu")
-		description={"en":talde['izena']+"'s album", "es":"Álbum de "+ talde['izena'] , "eu": talde['izena'] + "(r)en albuma"}
-		item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
-	else:
-		repo = site.data_repository()
-		item = pywikibot.ItemPage(repo, diskaKodea)
-		label= {"eu": diska['izena']+ " (single)", "en": diska['izena'] + " (single)", "es": diska['izena'] +" (single)"}
-		item.editLabels(labels=label, summary="Label-ak gehitu")
-		description={"en":talde['izena'] +"'s single", "es":"Single de "+ talde['izena'], "eu": talde['izena'] +"(r)en single-a"}
-		item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+	try:
+		if not single:
+				repo = site.data_repository()
+				item = pywikibot.ItemPage(repo, diskaKodea)
+				label= {"eu": diska['izena'] + " (albuma)", "en":diska['izena'] +" (album)", "es": diska['izena'] +" (album)"}
+				item.editLabels(labels=label, summary="Label-ak gehitu")
+				description={"en":talde['izena']+"'s album", "es":"Álbum de "+ talde['izena'] , "eu": talde['izena'] + "(r)en albuma"}
+				item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+		else:
+			repo = site.data_repository()
+			item = pywikibot.ItemPage(repo, diskaKodea)
+			label= {"eu": diska['izena']+ " (single)", "en": diska['izena'] + " (single)", "es": diska['izena'] +" (single)"}
+			item.editLabels(labels=label, summary="Label-ak gehitu")
+			description={"en":talde['izena'] +"'s single", "es":"Single de "+ talde['izena'], "eu": talde['izena'] +"(r)en single-a"}
+			item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ', '+diskaKodea+') ---> ERROREA EGON DA TALDEAREN DISKAREN DESKRIBAPENA ALDATZEAN \n')
+
 		
 	# honen parte da ... -ren albumak
-	____add_statementTaldeKodearekin(site,diskaKodea, ag.KODEAK['honen parte da'], albumakOrdenKronoKode)
+	try:
+		____add_statementTaldeKodearekin(site,diskaKodea, ag.KODEAK['honen parte da'], albumakOrdenKronoKode)
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ', '+diskaKodea+') ---> ERROREA EGON DA TALDEAREN DISKAREN HOONEN PARTE DA GEHITZEAN \n')
+
 	# genero artistikoa
 	generoak = c.lortuGeneroak(diska['generoa'])
 	if generoak is not None:
 		for genero in generoak:
 			try:
-				____add_statementTaldeKodearekin(site, diskaKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()] ,diska['url'], ag.KODEAK['url'])
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ', '+genero+') ---> ERROREA EGON DA TALDEAREN DISKAN GENEROA GEHITZEAN\n')
 			except:
 				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
 	# argitaratze-data
 	urtea = c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
-		____add_dateStatementTaldeKodearekin(site, diskaKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
-	____add_statementTaldeKodearekin(site, diskaKodea, ag.KODEAK['badok'], ("/").join(diska['url'].split("/")[-2]))
+		try:
+			____add_dateStatementTaldeKodearekin(site, diskaKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ', '+urtea+') ---> ERROREA EGON DA TALDEAREN DISKAN URTEA GEHITZEAN\n')
+	try:
+		____add_statementTaldeKodearekin(site, diskaKodea, ag.KODEAK['badok'], ("/").join(diska['url'].split("/")[-2]))
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ') ---> ERROREA EGON DA TALDEAREN DISKAN BADOK GEHITZEAN\n')
 	return diskaKodea
 
 
 
 def __taldeBatenDiskaSortu(site, diska, taldeKodea, diskaDiskografiaKodea, talde, single):
+	itemKodea = None
+	
 	if single:
-		itemKodea=__create_item(site, diska['izena'],6,talde['izena'])
-		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['single'])
+		try:
+			itemKodea=__create_item(site, diska['izena'],6,talde['izena'])
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena'] + ') ---> ERROREA EGON DA TALDEAREN ALBUMA SORTZEAN\n')
+		if itemKodea is not None:
+			try:
+				__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['single'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena'] + ') ---> ERROREA EGON DA TALDEAREN DISKAN HONAKO HAU DA GEHITZEAN\n')
+
 	else:
-		itemKodea = __create_item(site, diska['izena'], 4, talde['izena'])
-		__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['album'])
-	__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskaDiskografiaKodea)
-	__add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea)
-	__add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
+		try:
+			itemKodea = __create_item(site, diska['izena'], 4, talde['izena'])
+		except:
+			ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena'] + ') ---> ERROREA EGON DA TALDEAREN SINGLEA SORTZEAN\n')
+		if itemKodea is not None:
+			try:
+				__add_statement(site, itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['album'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ') ---> ERROREA EGON DA TALDEAREN DISKAN HONAKO HAU DA GEHITZEAN\n')
+
+	try:
+		__add_statement(site, itemKodea, ag.KODEAK['honen parte da'], diskaDiskografiaKodea)
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ') ---> ERROREA EGON DA TALDEAREN DISKAN HONEN PARTE DA GEHITZEAN\n')
+	
+	try:
+		__add_statement(site, itemKodea, ag.KODEAK['interpretatzailea'], taldeKodea)
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ') ---> ERROREA EGON DA TALDEAREN INTERPRETATZAILEA GEHITZEAN\n')
+
+	try:
+		__add_statement(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ') ---> ERROREA EGON DA TALDEAREN DISKAN LANAREN EDO IZENAREN HIZKUNTZA GEHITZEAN\n')
+
 	generoak = c.lortuGeneroak(diska['generoa'])
 	if generoak is not None:
 		for genero in generoak:
 			try:
 				__add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()],diska['url'], ag.KODEAK['url'])
 			except:
-				print(genero + " generoa ez da gehitu " + diska['izena'] + " diskoan.")
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ', '+genero+') ---> ERROREA EGON DA TALDEAREN DISKAN GENEROA GEHITZEAN\n')
+
 	urtea = c.lortuUrteak(diska['urtea'])
 	if urtea is not None:
-		__add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
-	____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
+		try:
+			__add_dateStatement(site, itemKodea, ag.KODEAK['argitaratze data'], urtea[0], diska['url'], ag.KODEAK['url'])
+		except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ', '+urtea+') ---> ERROREA EGON DA TALDEAREN DISKAN URTEA GEHITZEAN\n')
+
+	try:
+		____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['badok'], diska['url'].split("/")[-2])
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +diska['izena']  + ') ---> ERROREA EGON DA TALDEAREN DISKAN BADOK GEHITZEAN\n')
+
 	return itemKodea
 
 
@@ -350,30 +499,79 @@ def taldeBerriaSortu(site, talde):
 """
 
 def taldeaOsatuKodearekin(site,itemKodea, talde):
+	try:
+		____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN HONAKO HAU DA GEHITZEAN\n')
 	
-	____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
-	urteak= c.lortuUrteak(talde['urtea'])
+	urteak=None
+	try:
+		urteak= c.lortuUrteak(talde['urtea'])
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN URTEAK LORTZEAN\n')
+
 	if(urteak is not None):
 		if(len(urteak)==1):
-			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'], talde['url'] , ag.KODEAK['url'])
+			try:
+				____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'], talde['url'] , ag.KODEAK['url'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN SORRERA DATA GEHITZEAN\n')
+
 		else:
-			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'],talde['url'] , ag.KODEAK['url'])
-			____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['bukaera data'],urteak[1],ag.KODEAK['deuseztapen data'], talde['url'] , ag.KODEAK['url'])
-	if not __statementHoriDu(site, itemKodea, ag.KODEAK['eraketa lekua']) and not __statementHoriDu(site, itemKodea, ag.KODEAK['jaiolekua']) :
-		herriak = c.lortuHerriak(talde['herria'])
-		if herriak is not None:
-			__gehitu_herria(site, itemKodea, talde, herriak)
-	baduDiskografia= __statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
-	if baduDiskografia:
-		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> BADU DISKOGRAFIA \n')
-	else:
-		diskografiaKodea=__taldeBatenDiskografiaSortu(site,talde, itemKodea)
-		__add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
-	generoak= talde['generoak']
+			try:
+				____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['sorrera data'],urteak[0],ag.KODEAK['jaiotze data'],talde['url'] , ag.KODEAK['url'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN SORRERA DATA GEHITZEAN\n')
+				
+			try:
+				____add_dateStatementTaldeKodearekin(site, itemKodea, ag.KODEAK['bukaera data'],urteak[1],ag.KODEAK['deuseztapen data'], talde['url'] , ag.KODEAK['url'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN BUKAERA DATA GEHITZEAN\n')
+	try:
+		if not __statementHoriDu(site, itemKodea, ag.KODEAK['eraketa lekua']) and not __statementHoriDu(site, itemKodea, ag.KODEAK['jaiolekua']) :
+			herriak = c.lortuHerriak(talde['herria'])
+			if herriak is not None:
+				__gehitu_herria(site, itemKodea, talde, herriak)
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN HERRIA GEHITZEAN\n')
+	
+	
+	baduDiskografia = None
+	try:
+		baduDiskografia= __statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA DISKOGRAFIA DUEN AZTERTZEAN\n')
+	if baduDiskografia is not None:
+		if baduDiskografia:
+			ag.ERRORE_FITX.write("\n"+dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> OHARRA: TALDEAK BADU DISKOGRAFIA \n')
+		else:
+			diskografiaKodea=__taldeBatenDiskografiaSortu(site,talde, itemKodea)
+			if diskografiaKodea is not None:
+				try:
+					__add_statement(site, itemKodea, ag.KODEAK['diskografia'], diskografiaKodea)
+				except:
+					ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN DISKOGRAFIA KODEA GEHITZEAN\n')
+
+	
+	
+	
+	generoak = None
+	try:
+		generoak= talde['generoak']
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN GENEROAK LORTZEAN\n')
+
 	if generoak is not None:
 		for genero in generoak:
-			____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
-	____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], talde['url'].split("/")[-1])
+			try:
+				____add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
+			except:
+				ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA TALDEAREN GENEROA GEHITZEAN (' +genero +')\n' )
+	try:
+		____add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['badok'], talde['url'].split("/")[-1])
+	except:
+		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> ERROREA EGON DA BADOK GEHITZEAN\n')
+
 
 
 
