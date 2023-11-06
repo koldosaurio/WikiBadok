@@ -10,7 +10,7 @@ ZENBAT_IZEN=10
 IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
 TALDE_ID=1
 DISKA_ID=1
-ERRORE_FITX=open('./logs/erroreak.log', 'a')
+ERRORE_FITX=open('./logs/erroreak.log', 'w')
 
 def change_errore_fitx(fitx = './logs/erroreak.log'):
 	"""
@@ -29,7 +29,7 @@ def change_errore_fitx(fitx = './logs/erroreak.log'):
 	None.
 
 	"""
-	ERRORE_FITX=open(fitx, 'a')
+	ERRORE_FITX=open(fitx, 'w')
 
 KODEAK={
 'honako hau da':'P31',
