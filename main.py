@@ -34,6 +34,6 @@ for taldea in taldeak[:1]:
 
 
 if sartutakoak != []:
-	json.dump(json.dumps(sartutakoak), open('./musikastenID/sartutakoak.json', 'a'))
+ 	json.dump(json.dumps(sartutakoak), open('./musikastenID/sartutakoak.json', 'a'))
 
 

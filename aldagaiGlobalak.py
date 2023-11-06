@@ -10,26 +10,8 @@ ZENBAT_IZEN=10
 IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
 TALDE_ID=1
 DISKA_ID=1
-ERRORE_FITX=open('./logs/erroreak.log', 'w')
+ERRORE_FITX=open("./logs/erroreak.log", "a")
 
-def change_errore_fitx(fitx = './logs/erroreak.log'):
-	"""
-	!!Adi!!
-	-------
-	WikiBadok karpetan dagoen programa bat exekutatzean funtzio hau ez da beharrezkoa, hala ez bada
-	funtzio honek errore log-ak non kokatuko diren adieraziko dio programari.
-
-	Parameters
-	----------
-	fitx : string
-		errore log fitxategiaren ruta berria
-
-	Returns
-	-------
-	None.
-
-	"""
-	ERRORE_FITX=open(fitx, 'w')
 
 KODEAK={
 'honako hau da':'P31',
