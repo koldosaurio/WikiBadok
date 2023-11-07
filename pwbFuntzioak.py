@@ -579,7 +579,7 @@ def taldeaOsatuKodearekin(site,itemKodea, talde):
 		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> ERROREA EGON DA DISKOGRAFIA DUEN AZTERTZEAN\n")
 	if baduDiskografia is not None:
 		if baduDiskografia:
-			ag.ERRORE_FITX.write("DISKOGRAFIA DU\n")
+			arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> OHARRA: TALDEAK BADU DISKOGRAFIA \n")
 			#ag.ERRORE_FITX.write("\n"+dt.now().strftime("%H:%M:%S") + talde['izena'] + ' (' +talde['item_kodea'] + ') ---> OHARRA: TALDEAK BADU DISKOGRAFIA \n')
 		else:
 			diskografiaKodea=__taldeBatenDiskografiaSortu(site,talde, itemKodea)
