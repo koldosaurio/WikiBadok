@@ -25,15 +25,17 @@ taldeak = json.loads(json.load(open("./musikastenID/taldeak_alderatuta.json", 'r
 
 sartutakoak=[]
 for taldea in taldeak[:1]:
-	
 	try:
 		funtzioak.taldeaOsatuKodearekin(site, taldea['item_kodea'], taldea)
 		sartutakoak.append(taldea)
 	except:
-		ag.ERRORE_FITX.write(dt.now().strftime("%H:%M:%S") + taldea['izena'] + ' (' +taldea['item_kodea'] + ') ---> ERROREA EGON DA \n')
+		funtzioak.arazoa_tratatu(dt.now().strftime("%H:%M:%S") + taldea['izena'] + " (" +str(taldea['item_kodea']) + ") ---> ERROREA EGON DA \n")
 
 
 if sartutakoak != []:
- 	json.dump(json.dumps(sartutakoak), open('./musikastenID/sartutakoak.json', 'a'))
+ 	json.dump(json.dumps(sartutakoak), open("./musikastenID/sartutakoak.json", "a"))
+
+ag.ERRORE_FITX.close()
+
 
 
