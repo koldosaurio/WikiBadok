@@ -24,7 +24,7 @@ taldeak = json.loads(json.load(open("./musikastenID/taldeak_alderatuta.json", 'r
 #ag.change_errore_fitx('./logs/exekuzio_erroreak.log')
 
 sartutakoak=[]
-for taldea in taldeak[:1]:
+for taldea in taldeak[:2]:
 	try:
 		funtzioak.taldeaOsatuKodearekin(site, taldea['item_kodea'], taldea)
 		sartutakoak.append(taldea)
@@ -33,7 +33,7 @@ for taldea in taldeak[:1]:
 
 
 if sartutakoak != []:
- 	json.dump(json.dumps(sartutakoak), open("./musikastenID/sartutakoak.json", "a"))
+	json.dump(json.dumps(sartutakoak), open("./musikastenID/sartutakoak.json", "a"))
 
 ag.ERRORE_FITX.close()
 

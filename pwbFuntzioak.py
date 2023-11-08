@@ -416,7 +416,8 @@ def __taldeBatenDiskaAldatu(site, diska, taldeKodea, albumakOrdenKronoKode, tald
 		except:
 			arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" + str(diska['izena'])  + ", "+ str(urtea) +") ---> ERROREA EGON DA TALDEAREN DISKAN URTEA GEHITZEAN\n")
 	try:
-		__add_badokStatement(site, diskaKodea, diska['url'].split('/')[--1])
+		
+		__add_badokStatement(site, diskaKodea, '/'.join(diska.get('url', '').rsplit('/', 2)[-2:]))
 	except:
 		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(diska['izena'])  + ") ---> ERROREA EGON DA TALDEAREN DISKAN BADOK GEHITZEAN\n")
 	return diskaKodea
@@ -479,7 +480,7 @@ def __taldeBatenDiskaSortu(site, diska, taldeKodea, diskaDiskografiaKodea, talde
 			arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(diska['izena'])  + ", "+str(urtea)+") ---> ERROREA EGON DA TALDEAREN DISKAN URTEA GEHITZEAN\n")
 
 	try:
-		__add_badokStatement(site, itemKodea,diska['url'].split('/')[--1])
+		__add_badokStatement(site, itemKodea, '/'.join(diska.get('url', '').rsplit('/', 2)[-2:]))
 	except:
 		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(diska['izena'])  + ") ---> ERROREA EGON DA TALDEAREN DISKAN BADOK GEHITZEAN\n")
 
