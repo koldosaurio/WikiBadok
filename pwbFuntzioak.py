@@ -530,6 +530,52 @@ def taldeBerriaSortu(site, talde):
 """
 
 def taldeaOsatuKodearekin(site,itemKodea, talde):
+	try:
+		repo = site.data_repository()
+		item = pywikibot.ItemPage(repo, itemKodea)
+		item.get()
+		
+		language_code = 'eu'
+		labels = item.labels.get(language_code)
+		if labels is None:
+			label_berria= {"eu": talde['izena']}
+			item.editLabels(labels=label_berria, summary="Label-ak gehitu")
+			
+		language_code = 'es'
+		labels = item.labels.get(language_code)
+		if labels is None:
+			label_berria= {"es": talde['izena']}
+			item.editLabels(labels=label_berria, summary="Label-ak gehitu")
+		
+		language_code = 'en'
+		labels = item.labels.get(language_code)
+		if labels is None:
+			label_berria= {"en": talde['izena']}
+			item.editLabels(labels=label_berria, summary="Label-ak gehitu")
+		
+		
+		
+		language_code = 'eu'
+		descriptions = item.descriptions.get(language_code)
+		if descriptions is None:
+			description={"eu": "Euskal musika taldea"}
+			item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+		
+		language_code = 'es'
+		descriptions = item.descriptions.get(language_code)
+		if descriptions is None:
+			description={"es":"Grupo de música vasco"}
+			item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+		
+		language_code = 'en'
+		descriptions = item.descriptions.get(language_code)
+		if descriptions is None:
+			description={"en":"Basque music band"}
+			item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
+
+	except:
+		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> ERROREA EGON DA TALDEAREN DESKRIBAPENA EDOTA LABELA ALDATZEAN\n")
+	
 	badu = False
 	try:
 		badu = __statementHoriDu(site, itemKodea, ag.KODEAK['honako hau da'])

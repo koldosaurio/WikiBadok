@@ -23,8 +23,9 @@ taldeak = json.loads(json.load(open("./musikastenID/taldeak_alderatuta.json", 'r
 
 #ag.change_errore_fitx('./logs/exekuzio_erroreak.log')
 
+#11 arte gehitu dugu
 sartutakoak=[]
-for taldea in taldeak[:2]:
+for taldea in taldeak[:12]:
 	try:
 		funtzioak.taldeaOsatuKodearekin(site, taldea['item_kodea'], taldea)
 		sartutakoak.append(taldea)
