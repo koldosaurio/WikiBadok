@@ -12,6 +12,8 @@ TALDE_ID=1
 DISKA_ID=1
 ERRORE_FITX=open(r".\logs\erroreak.log", "a")
 
+AMAIERAK1=['a','e','i','o','u','r','w', '2', '3', '4', '6', '7', '8', '9']
+AMAIERAK2=['11', '20','40', '60', '80']
 
 KODEAK={
 'honako hau da':'P31',

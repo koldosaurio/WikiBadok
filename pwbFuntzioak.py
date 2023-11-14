@@ -13,7 +13,12 @@ from pywikibot import pagegenerators
 
 
 
-
+def lortu_amaiera(izena):
+	if izena[-1] in ag.AMAIERAK1 or izena[-2:] in ag.AMAIERAK2:
+		izena+='-ren'
+	else:
+		izena+='-en'
+	return izena
 
 
 def __create_item(site,izena, mota,taldeIzena):
@@ -26,33 +31,38 @@ def __create_item(site,izena, mota,taldeIzena):
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==2: #taldearen diskografia sortu
-		label= {"eu": izena +'(r)en diskografia', "en":izena+"'s discography", "es": "Discografía de "+izena}
+		izena_amaierarekin = lortu_amaiera(izena)
+		label= {"eu": izena_amaierarekin +' diskografia', "en":izena+"'s discography", "es": "Discografía de "+izena}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
 		description={"en":"Wikimedia artist discography", "es":"Discografía de un artista o grupo musical de Wikimedia", "eu": "Wikimediako artista edo musika taldearen diskografia"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==3:#taldearen album diskografia sortu
-		label= {"eu": izena+'(r)en albumak', "es":"Álbumes de "+ izena, "en": izena + "'s albums"}
+		izena_amaierarekin = lortu_amaiera(izena)
+		label= {"eu": izena_amaierarekin+' albumak', "es":"Álbumes de "+ izena, "en": izena + "'s albums"}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
 		description={"en":"Wikimedia albums discography", "es":"Discografía de álbumes de Wikimedia", "eu": "Wikimediako albumen diskografia"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==4: #taldearen albumak sortu
+		izena_amaierarekin = lortu_amaiera(taldeIzena)
 		label= {"eu": izena + " (albuma)", "en": izena +" (album)", "es": izena +" (album)"}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
-		description={"en":taldeIzena+"'s album", "es":"Álbum de "+ taldeIzena , "eu": taldeIzena + "(r)en albuma"}
+		description={"en":taldeIzena+"'s album", "es":"Álbum de "+ taldeIzena , "eu": izena_amaierarekin + " albuma"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==5: #taldearen single diskografia sortu
-		label= {"eu": izena+'(r)en single diskografia', "en": izena + "'s singles discography", "es": "Discografía de singles de " + izena}
+		izena_amaierarekin = lortu_amaiera(izena)
+		label= {"eu": izena_amaierarekin+' single diskografia', "en": izena + "'s singles discography", "es": "Discografía de singles de " + izena}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
 		description={"en":"Wikimedia singles discography", "es":"Discografía de singles de Wikimedia", "eu": "Wikimediako single diskografia"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	elif mota==6: #talde baten singleak
+		izena_amaierarekin = lortu_amaiera(taldeIzena)
 		label= {"eu": izena+ " (single)", "en": izena + " (single)", "es": izena +" (single)"}
 		new_item.editLabels(labels=label, summary="Label-ak gehitu")
-		description={"en":taldeIzena+"'s single", "es":"Single de "+ taldeIzena, "eu": taldeIzena +"(r)en single-a"}
+		description={"en":taldeIzena+"'s single", "es":"Single de "+ taldeIzena, "eu": izena_amaierarekin +" single-a"}
 		new_item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		
 	return new_item.getID()
@@ -379,14 +389,16 @@ def __taldeBatenDiskaAldatu(site, diska, taldeKodea, albumakOrdenKronoKode, tald
 				item = pywikibot.ItemPage(repo, diskaKodea)
 				label= {"eu": diska['izena'] + " (albuma)", "en":diska['izena'] +" (album)", "es": diska['izena'] +" (album)"}
 				item.editLabels(labels=label, summary="Label-ak gehitu")
-				description={"en":talde['izena']+"'s album", "es":"Álbum de "+ talde['izena'] , "eu": talde['izena'] + "(r)en albuma"}
+				izena_amaierarekin = lortu_amaiera(talde['izena'])
+				description={"en":talde['izena']+"'s album", "es":"Álbum de "+ talde['izena'] , "eu": izena_amaierarekin + " albuma"}
 				item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 		else:
 			repo = site.data_repository()
 			item = pywikibot.ItemPage(repo, diskaKodea)
 			label= {"eu": diska['izena']+ " (single)", "en": diska['izena'] + " (single)", "es": diska['izena'] +" (single)"}
 			item.editLabels(labels=label, summary="Label-ak gehitu")
-			description={"en":talde['izena'] +"'s single", "es":"Single de "+ talde['izena'], "eu": talde['izena'] +"(r)en single-a"}
+			izena_amaierarekin = lortu_amaiera(talde['izena'])
+			description={"en":talde['izena'] +"'s single", "es":"Single de "+ talde['izena'], "eu": izena_amaierarekin +" single-a"}
 			item.editDescriptions(descriptions=description, summary="Deskribapenak gehitu")
 	except:
 		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(diska['izena'])  + ", "+str(diskaKodea)+") ---> ERROREA EGON DA TALDEAREN DISKAREN DESKRIBAPENA ALDATZEAN \n")
@@ -587,6 +599,13 @@ def taldeaOsatuKodearekin(site,itemKodea, talde):
 			__add_statementTaldeKodearekin(site,itemKodea, ag.KODEAK['honako hau da'], ag.KODEAK['musika talde'])
 		except:
 			arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> ERROREA EGON DA TALDEAREN HONAKO HAU DA GEHITZEAN\n")
+	
+	
+	try:
+		__add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['lanaren edo izenaren hizkuntza'], ag.KODEAK['euskara'])
+	except:
+		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " ---> ERROREA EGON DA TALDEAN LANAREN EDO IZENAREN HIZKUNTZA GEHITZEAN\n")
+
 	
 	urteak=None
 	try:
