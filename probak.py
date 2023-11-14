@@ -14,6 +14,6 @@ for diska in taldea['diskak']:
 	if lag !=0 and lag is not None:
 		p.__add_badokStatement(site, lag, '/'.join(diska.get('url', '').rsplit('/', 2)[-2:]))
 '''
-print(p.lortu_amaiera('kaixo'))
+print(p.lortu_amaiera('A Tuti Plain2'))
 izena='kaixo'
 print(izena[-2:])

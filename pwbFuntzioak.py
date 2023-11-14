@@ -14,7 +14,8 @@ from pywikibot import pagegenerators
 
 
 def lortu_amaiera(izena):
-	if izena[-1] in ag.AMAIERAK1 or izena[-2:] in ag.AMAIERAK2:
+	
+	if izena[-1].lower() in ag.AMAIERAK1 or izena[-2:].lower() in ag.AMAIERAK2:
 		izena+='-ren'
 	else:
 		izena+='-en'
