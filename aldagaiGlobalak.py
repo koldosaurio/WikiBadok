@@ -10,7 +10,7 @@ ZENBAT_IZEN=10
 IZEN_FILTROA=['hesian', 'niña coyote eta chico tornado']
 TALDE_ID=1
 DISKA_ID=1
-ERRORE_FITX=open(r".\logs\erroreak.log", "a")
+ERRORE_FITX=open(r".\logs\erroreak3.log", "a")
 
 AMAIERAK1=['a','e','i','o','u','r','w', '2', '3', '4', '6', '7', '8', '9']
 AMAIERAK2=['11', '20','40', '60', '80']
@@ -73,7 +73,10 @@ GENEROAK={
 'funka':'Q164444',
 'hard-rocka':'Q83270',
 'hardcorea':'Q11974316',
+'herri':'Q235858',
+'herrikanta':'Q235858',
 'herri kanta':'Q235858',
+'kanta':'Q235858',
 'indie-folka':'Q1317816',
 'industriala':'Q487965',
 'jazz-rocka':'Q944465',
@@ -107,7 +110,7 @@ GENEROAK={
 'soula':'Q131272',
 'stonerra':'Q617240',
 'thrasha':'Q483352',
-'triki-popa':'QQ118123362',
+'triki-popa':'Q118123362',
 'trikitia':'Q29252685'
 }
 

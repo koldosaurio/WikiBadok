@@ -414,9 +414,8 @@ def __taldeBatenDiskaAldatu(site, diska, taldeKodea, albumakOrdenKronoKode, tald
 
 
 	# genero artistikoa
-	generoak = c.lortuGeneroak(diska['generoa'])
-	if generoak is not None:
-		for genero in generoak:
+
+		for genero in diska['generoa'].replace(" ", "").split(","):
 			try:
 				__add_statementTaldeKodearekin(site, diskaKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()],diska['url'], ag.KODEAK['url'])
 			except:
@@ -477,9 +476,8 @@ def __taldeBatenDiskaSortu(site, diska, taldeKodea, diskaDiskografiaKodea, talde
 	except:
 		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(diska['izena'])  + ") ---> ERROREA EGON DA TALDEAREN DISKAN LANAREN EDO IZENAREN HIZKUNTZA GEHITZEAN\n")
 
-	generoak = c.lortuGeneroak(diska['generoa'])
-	if generoak is not None:
-		for genero in generoak:
+        #genero artistikoak
+		for genero in diska['generoa'].replace(" ", "").split(","):
 			try:
 				__add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()],diska['url'], ag.KODEAK['url'])
 			except:
@@ -528,9 +526,8 @@ def taldeBerriaSortu(site, talde):
 	herriak = c.lortuHerriak(talde['herria'])
 	if herriak is not None:
 		__gehitu_herria(site, itemKodea, talde, herriak)
-	generoak= c.lortuGeneroak(talde['generoak'])
-	if generoak is not None:
-		for genero in generoak:
+     #genero artistikoak
+		for genero in talde['generoa'].replace(" ", "").split(","):
 			__add_statement(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
 	return itemKodea
 
@@ -675,9 +672,47 @@ def taldeaOsatuKodearekin(site,itemKodea, talde):
 
 
 
+def konpondu(site,itemKodea, talde):
+	diskografiaKodea = None
+	albumDiskografiaKodea =None
+	repo = site.data_repository()
+	item = pywikibot.ItemPage(repo, itemKodea)
+	item.get()
+	
+	for genero in talde['generoak']:
+		try:
+			__add_statementTaldeKodearekin(site, itemKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], talde['url'] , ag.KODEAK['url'])
+		except:
+			arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> ERROREA EGON DA TALDEAREN GENEROA GEHITZEAN (" +str(genero) +")\n")
 
+	baduDiskografia = None
+	try:
+		baduDiskografia= __statementHoriDu(site, itemKodea, ag.KODEAK['diskografia'])
+	except:
+		arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> ERROREA EGON DA DISKOGRAFIA DUEN AZTERTZEAN\n")
 
+	if baduDiskografia:
+		diskografiaKodea = str(item.claims[ag.KODEAK['diskografia']][0].target)
+		diskografiaKodea = diskografiaKodea.split(":")[1].replace("]", "")
+		if diskografiaKodea != None:
+			item = pywikibot.ItemPage(repo, diskografiaKodea)
+			item.get()
+			albumDiskografiaKodea = str(item.claims[ag.KODEAK['elementuaren zerrenda']][0].target)
+			albumDiskografiaKodea = albumDiskografiaKodea.split(":")[1].replace("]", "")
 
+			if albumDiskografiaKodea != None:
+				item = pywikibot.ItemPage(repo, albumDiskografiaKodea)
+				item.get()
+				for diska in talde['diskak']:
+					if diska['single'] == 'False':
+						badagoDiskaKodea = __badagoDiska(site, diska, itemKodea, ag.KODEAK['album'])
+						if badagoDiskaKodea!=0:
+							if badagoDiskaKodea != None:
+								for genero in diska['generoa'].replace(" ", "").split(","):
+									try:
+										__add_statementTaldeKodearekin(site, badagoDiskaKodea, ag.KODEAK['genero artistikoa'], ag.GENEROAK[genero.lower()], diska['url'] , ag.KODEAK['url'])
+									except:
+										arazoa_tratatu(dt.now().strftime("%H:%M:%S") + talde['izena'] + " (" +str(talde['item_kodea']) + ") ---> ERROREA EGON DA TALDEAREN GENEROA GEHITZEAN (" +str(genero) +")\n")
 
 
 
